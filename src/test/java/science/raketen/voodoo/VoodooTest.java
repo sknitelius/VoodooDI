@@ -26,7 +26,7 @@ public class VoodooTest {
   @Test
   public void test() throws Exception {
     Voodoo container = Voodoo.initalize();
-    HelloService helloService = container.instance(HelloService.class);
-    System.out.println(helloService.greet("world"));
+    Houngan hougan = container.instance(Houngan.class);
+    System.out.println(hougan.summon("Hogo"));
   }
 }

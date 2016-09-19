@@ -15,19 +15,15 @@
  */
 package science.raketen.voodoo;
 
-import javax.inject.Inject;
 
 /**
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class HelloService {
+public class Spirit {
 
-  @Inject
-  private Greeter greeter;
-  
-  public String greet(String world) {
-    return greeter.delegate("world");
+  public String interact(String name) {
+    return String.format("Hello %s", name);
   }
   
 }
