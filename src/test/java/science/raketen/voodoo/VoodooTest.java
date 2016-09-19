@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius.
+ * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package science.raketen.voodoo;
 
-import science.raketen.voodoo.puppets.HelloService;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import science.raketen.voodoo.puppets.HelloService;
 
 /**
  *
@@ -27,7 +27,7 @@ public class VoodooTest {
 
   @Test
   public void test() throws Exception {
-    Voodoo container = Voodoo.initalize();
+    Voodoo container = Voodoo.initalize("science.raketen.voodoo.puppets");
     HelloService helloService = container.instance(HelloService.class);
     assertEquals("Hello world", helloService.greet("world"));
   }

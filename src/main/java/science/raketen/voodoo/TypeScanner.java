@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 steph.
+ * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,10 @@ public class TypeScanner {
     try {
       Enumeration<URL> resources = classLoader.getResources(path);
 
-      return Collections.list(resources).stream()
+      return Collections.list(resources).parallelStream()
               .map(resource -> scanResource(resource.getFile(), packageName))
               .flatMap(Collection::stream)
               .collect(Collectors.toList());
-
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -63,7 +62,8 @@ public class TypeScanner {
         classes.addAll(scanResource(file, packageName + file.getName()));
       } else if (file.getName().endsWith(".class")) {
         try {
-          classes.add(Class.forName(packageName + '.' + file.getName().replace(".class", "")));
+          packageName = packageName.endsWith(".") ? packageName : packageName + '.';
+          classes.add(Class.forName(packageName + file.getName().replace(".class", "")));
         } catch (ClassNotFoundException ex) {
           throw new RuntimeException(ex);
         }

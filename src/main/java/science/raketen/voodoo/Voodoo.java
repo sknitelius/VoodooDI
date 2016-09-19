@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius.
+ * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,37 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 /**
- *
+ * Voodoo DI Container - capable of handling Interface and SuperType injection.
+ * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public class Voodoo {
 
+  /**
+   * Maps the relevant concrete implementation to the target type. 
+   */
   private final ConcurrentHashMap<Class, Class> TYPES = new ConcurrentHashMap<>();
 
   private Voodoo() {
   }
 
-  public static Voodoo initalize() throws Exception {
+  /**
+   * Scans all files found on Classpath.
+   * 
+   * @return Voodoo - Voodoo container instance.
+   */
+  public static Voodoo initalize() {
     final Voodoo voodoo = new Voodoo();
     voodoo.scan("");
     return initalize("");
   }
 
+  /**
+   * Limits scanning to the specified package.
+   * 
+   * @param packageName - name of package to be scanned. 
+   * @return Voodoo - Voodoo container instance.
+   */
   public static Voodoo initalize(String packageName) {
     final Voodoo voodoo = new Voodoo();
     voodoo.scan(packageName);
@@ -48,7 +63,6 @@ public class Voodoo {
 
   private void scan(String pakageName) {
     List<Class> types = TypeScanner.find(pakageName);
-
     types.stream()
             .filter((type) -> (!type.isInterface()))
             .forEach((type) -> {
@@ -78,21 +92,26 @@ public class Voodoo {
       Constructor<T> constructor = TYPES.get(clazz).getConstructor(new Class[]{});
       newInstance = constructor.newInstance(new Object[]{});
       processFields(clazz, newInstance);
-
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
     }
     return newInstance;
 
   }
 
-  private <T> void processFields(Class<T> clazz, T targetInstance) throws SecurityException, IllegalAccessException, IllegalArgumentException {
+  private <T> void processFields(Class<T> clazz, T targetInstance) {
     for (Field field : clazz.getDeclaredFields()) {
       Inject annotation = field.getAnnotation(Inject.class);
       if (annotation != null) {
         Object instance = instance(field.getType());
         field.setAccessible(true);
-        field.set(targetInstance, instance);
+        try {
+          field.set(targetInstance, instance);
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
+          Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+          throw new RuntimeException(ex);
+        }
       }
     }
   }
