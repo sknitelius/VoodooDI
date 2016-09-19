@@ -21,7 +21,6 @@ import javax.inject.Inject;
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-@Puppet
 public class HelloService {
 
   @Inject

@@ -20,7 +20,6 @@ package science.raketen.voodoo;
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-@Puppet
 public class Greeter {
 
   public String delegate(String name) {
