@@ -15,19 +15,14 @@
  */
 package science.raketen.voodoo;
 
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
 
 /**
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class VoodooTest {
+@Puppet
+public interface Spirit {
 
-  @Test
-  public void test() throws Exception {
-    Voodoo container = Voodoo.initalize();
-    Houngans helloService = container.instance(Houngans.class);
-    assertTrue(helloService.summon("Hogo").contains("Hogo"));
-  }
+  public String interact(String name);
+  
 }

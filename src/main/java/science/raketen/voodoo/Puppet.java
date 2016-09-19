@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius.
+ * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,16 @@
  */
 package science.raketen.voodoo;
 
+import java.lang.annotation.Inherited;
 import javax.inject.Scope;
 
 /**
- *
+ * Voodoo Puppet Bean - pseudo scope resulting in a direct injection.
+ * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 @Scope
+@Inherited
 public @interface Puppet {
   
 }

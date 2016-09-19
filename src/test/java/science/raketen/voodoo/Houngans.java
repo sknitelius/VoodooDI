@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius.
+ * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,18 @@ package science.raketen.voodoo;
 import javax.inject.Inject;
 
 /**
- *
+ * Voodoo priest - can interact with the spirits. 
+ * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 @Puppet
-public class HelloService {
+public class Houngans {
 
   @Inject
-  private Greeter greeter;
+  private Spirit spirit;
   
-  public String greet(String world) {
-    return greeter.delegate("world");
+  public String summon(String name) {
+    return spirit.interact(name);
   }
   
 }

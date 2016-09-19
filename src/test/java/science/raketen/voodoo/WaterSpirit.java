@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius.
+ * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,15 @@ package science.raketen.voodoo;
 
 
 /**
- *
+ * Water Spirit.
+ * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-@Puppet
-public class Greeter {
+public class WaterSpirit implements Spirit {
 
-  public String delegate(String name) {
-    return String.format("Hello %s", name);
+  @Override
+  public String interact(String name) {
+    return String.format("Waterspirit %s summoned.", name);
   }
   
 }

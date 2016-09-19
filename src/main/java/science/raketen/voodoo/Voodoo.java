@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius.
+ * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@ import javax.inject.Inject;
 import org.reflections.Reflections;
 
 /**
- *
+ * Voodoo DI Container - selecting @Puppet annotated types only. 
+ * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public class Voodoo {
@@ -35,10 +36,40 @@ public class Voodoo {
   private Voodoo() {
   }
 
-  public static Voodoo initalize() throws Exception {
+  public static Voodoo initalize() {
+    return initalize("");
+  }
+
+  public static Voodoo initalize(String packageName) {
     final Voodoo voodoo = new Voodoo();
-    voodoo.scan();
+    voodoo.scan(packageName);
     return voodoo;
+  }
+
+  private void scan(String packageName) {
+    Reflections reflections = new Reflections(packageName);
+    Set<Class<? extends Object>> types = reflections.getTypesAnnotatedWith(Puppet.class);
+    types.stream()
+            .filter((type) -> (!type.isInterface()))
+            .forEach((type) -> {
+              registerInterfaces(type);
+              registerSuperTypes(type);
+            });
+  }
+
+  private void registerSuperTypes(Class type) {
+    Class<?> superclass = type.getSuperclass();
+    while (superclass != Object.class) {
+      TYPES.put(superclass, type);
+      superclass = type.getSuperclass();
+    }
+  }
+
+  private void registerInterfaces(Class type) {
+    TYPES.put(type, type);
+    for (Class interFace : type.getInterfaces()) {
+      TYPES.put(interFace, type);
+    }
   }
 
   public <T> T instance(Class<T> clazz) {
@@ -47,34 +78,24 @@ public class Voodoo {
       Constructor<T> constructor = TYPES.get(clazz).getConstructor(new Class[]{});
       newInstance = constructor.newInstance(new Object[]{});
       processFields(clazz, newInstance);
-
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
     }
     return newInstance;
-
   }
 
-  private <T> void processFields(Class<T> clazz, T targetInstance) throws SecurityException, IllegalAccessException, IllegalArgumentException {
+  private <T> void processFields(Class<T> clazz, T targetInstance) {
     for (Field field : clazz.getDeclaredFields()) {
       Inject annotation = field.getAnnotation(Inject.class);
       if (annotation != null) {
         Object instance = instance(field.getType());
         field.setAccessible(true);
-        field.set(targetInstance, instance);
-      }
-    }
-  }
-
-  private void scan() throws ClassNotFoundException {
-    Reflections reflections = new Reflections("");
-    Set<Class<? extends Object>> types = reflections.getTypesAnnotatedWith(Puppet.class);
-    for (Class type : types) {
-      TYPES.put(type, type);
-      Class<?> superclass = type.getSuperclass();
-      while (superclass != Object.class) {
-        TYPES.put(type, type);
-        superclass = type.getSuperclass();
+        try {
+          field.set(targetInstance, instance);
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
+          Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+          throw new RuntimeException(ex);
+        }
       }
     }
   }
