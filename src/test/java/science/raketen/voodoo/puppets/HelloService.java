@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo;
+package science.raketen.voodoo.puppets;
 
-import javax.inject.Scope;
+import javax.inject.Inject;
 
 /**
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-@Scope
-public @interface Puppet {
+public class HelloService {
+
+  @Inject
+  private Greeter greeter;
+  
+  public String greet(String world) {
+    return greeter.delegate("world");
+  }
   
 }

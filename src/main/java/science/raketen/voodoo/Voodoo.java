@@ -17,12 +17,11 @@ package science.raketen.voodoo;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import org.reflections.Reflections;
 
 /**
  *
@@ -37,8 +36,40 @@ public class Voodoo {
 
   public static Voodoo initalize() throws Exception {
     final Voodoo voodoo = new Voodoo();
-    voodoo.scan();
+    voodoo.scan("");
+    return initalize("");
+  }
+
+  public static Voodoo initalize(String packageName) {
+    final Voodoo voodoo = new Voodoo();
+    voodoo.scan(packageName);
     return voodoo;
+  }
+
+  private void scan(String pakageName) {
+    List<Class> types = TypeScanner.find(pakageName);
+
+    types.stream()
+            .filter((type) -> (!type.isInterface()))
+            .forEach((type) -> {
+              registerInterfaces(type);
+              registerSuperTypes(type);
+            });
+  }
+
+  private void registerSuperTypes(Class type) {
+    Class<?> superclass = type.getSuperclass();
+    while (superclass != Object.class) {
+      TYPES.put(superclass, type);
+      superclass = type.getSuperclass();
+    }
+  }
+
+  private void registerInterfaces(Class type) {
+    TYPES.put(type, type);
+    for (Class interFace : type.getInterfaces()) {
+      TYPES.put(interFace, type);
+    }
   }
 
   public <T> T instance(Class<T> clazz) {
@@ -62,19 +93,6 @@ public class Voodoo {
         Object instance = instance(field.getType());
         field.setAccessible(true);
         field.set(targetInstance, instance);
-      }
-    }
-  }
-
-  private void scan() throws ClassNotFoundException {
-    Reflections reflections = new Reflections("");
-    Set<Class<? extends Object>> types = reflections.getTypesAnnotatedWith(Puppet.class);
-    for (Class type : types) {
-      TYPES.put(type, type);
-      Class<?> superclass = type.getSuperclass();
-      while (superclass != Object.class) {
-        TYPES.put(type, type);
-        superclass = type.getSuperclass();
       }
     }
   }
