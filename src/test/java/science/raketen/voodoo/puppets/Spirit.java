@@ -20,8 +20,8 @@ package science.raketen.voodoo.puppets;
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public interface Greeter {
+public interface Spirit {
 
-  public String delegate(String name);
+  public String interact(String name);
   
 }

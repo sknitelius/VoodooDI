@@ -21,13 +21,13 @@ import javax.inject.Inject;
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class HelloService {
+public class Houngans {
 
   @Inject
-  private Greeter greeter;
+  private Spirit greeter;
   
-  public String greet(String world) {
-    return greeter.delegate("world");
+  public String summon(String name) {
+    return greeter.interact(name);
   }
   
 }

@@ -17,7 +17,9 @@ package science.raketen.voodoo;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,22 +27,22 @@ import javax.inject.Inject;
 
 /**
  * Voodoo DI Container - capable of handling Interface and SuperType injection.
- * 
+ *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public class Voodoo {
 
   /**
-   * Maps the relevant concrete implementation to the target type. 
+   * Maps the relevant concrete implementation to the target type.
    */
-  private final ConcurrentHashMap<Class, Class> TYPES = new ConcurrentHashMap<>();
+  private final Map<Class, Class> types = new ConcurrentHashMap<>();
 
   private Voodoo() {
   }
 
   /**
    * Scans all files found on Classpath.
-   * 
+   *
    * @return Voodoo - Voodoo container instance.
    */
   public static Voodoo initalize() {
@@ -51,8 +53,8 @@ public class Voodoo {
 
   /**
    * Limits scanning to the specified package.
-   * 
-   * @param packageName - name of package to be scanned. 
+   *
+   * @param packageName - name of package to be scanned.
    * @return Voodoo - Voodoo container instance.
    */
   public static Voodoo initalize(String packageName) {
@@ -62,9 +64,10 @@ public class Voodoo {
   }
 
   private void scan(String pakageName) {
-    List<Class> types = TypeScanner.find(pakageName);
-    types.stream()
-            .filter((type) -> (!type.isInterface()))
+    List<Class> discoveredTypes = TypeScanner.find(pakageName);
+    discoveredTypes.stream()
+            .filter((type)
+                    -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
             .forEach((type) -> {
               registerInterfaces(type);
               registerSuperTypes(type);
@@ -72,24 +75,30 @@ public class Voodoo {
   }
 
   private void registerSuperTypes(Class type) {
-    Class<?> superclass = type.getSuperclass();
-    while (superclass != Object.class) {
-      TYPES.put(superclass, type);
-      superclass = type.getSuperclass();
+    Class<?> supertype = type.getSuperclass();
+    while (supertype != Object.class) {
+      if (types.containsKey(supertype)) {
+        throw new RuntimeException("Ambigious Puppet for " + supertype);
+      }
+      types.put(supertype, type);
+      supertype = type.getSuperclass();
     }
   }
 
   private void registerInterfaces(Class type) {
-    TYPES.put(type, type);
+    types.put(type, type);
     for (Class interFace : type.getInterfaces()) {
-      TYPES.put(interFace, type);
+      if (types.containsKey(interFace)) {
+        throw new RuntimeException("Ambigious Puppet for " + interFace);
+      }
+      types.put(interFace, type);
     }
   }
 
   public <T> T instance(Class<T> clazz) {
     T newInstance = null;
     try {
-      Constructor<T> constructor = TYPES.get(clazz).getConstructor(new Class[]{});
+      Constructor<T> constructor = types.get(clazz).getConstructor(new Class[]{});
       newInstance = constructor.newInstance(new Object[]{});
       processFields(clazz, newInstance);
     } catch (Exception ex) {
@@ -97,7 +106,6 @@ public class Voodoo {
       throw new RuntimeException(ex);
     }
     return newInstance;
-
   }
 
   private <T> void processFields(Class<T> clazz, T targetInstance) {

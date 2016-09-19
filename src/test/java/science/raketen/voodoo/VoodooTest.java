@@ -15,9 +15,9 @@
  */
 package science.raketen.voodoo;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import science.raketen.voodoo.puppets.HelloService;
+import science.raketen.voodoo.puppets.Houngans;
 
 /**
  *
@@ -28,7 +28,7 @@ public class VoodooTest {
   @Test
   public void test() throws Exception {
     Voodoo container = Voodoo.initalize("science.raketen.voodoo.puppets");
-    HelloService helloService = container.instance(HelloService.class);
-    assertEquals("Hello world", helloService.greet("world"));
+    Houngans helloService = container.instance(Houngans.class);
+    assertTrue(helloService.summon("Hogo").contains("Hogo"));
   }
 }

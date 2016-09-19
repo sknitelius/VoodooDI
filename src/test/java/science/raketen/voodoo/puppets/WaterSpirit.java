@@ -20,11 +20,11 @@ package science.raketen.voodoo.puppets;
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class GreeterImpl implements Greeter {
+public class WaterSpirit implements Spirit {
 
   @Override
-  public String delegate(String name) {
-    return String.format("Hello %s", name);
+  public String interact(String name) {
+    return String.format("Waterspirit %s summoned.", name);
   }
   
 }
