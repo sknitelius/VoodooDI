@@ -21,7 +21,7 @@ import javax.inject.Inject;
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class Houngans {
+public class Houngan {
 
   @Inject
   private Spirit greeter;

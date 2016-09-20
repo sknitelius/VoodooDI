@@ -17,7 +17,8 @@ package science.raketen.voodoo;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import science.raketen.voodoo.puppets.Houngans;
+import science.raketen.voodoo.puppets.Houngan;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -28,7 +29,7 @@ public class VoodooTest {
   @Test
   public void test() throws Exception {
     Voodoo container = Voodoo.initalize("science.raketen.voodoo.puppets");
-    Houngans helloService = container.instance(Houngans.class);
+    Houngan helloService = container.instance(Houngan.class);
     assertTrue(helloService.summon("Hogo").contains("Hogo"));
   }
 }
