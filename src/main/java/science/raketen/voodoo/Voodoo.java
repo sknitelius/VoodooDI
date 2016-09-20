@@ -31,7 +31,7 @@ import org.reflections.Reflections;
  */
 public class Voodoo {
 
-  private final ConcurrentHashMap<Class, Class> TYPES = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<Class, Class> types = new ConcurrentHashMap<>();
 
   private Voodoo() {
   }
@@ -48,8 +48,8 @@ public class Voodoo {
 
   private void scan(String packageName) {
     Reflections reflections = new Reflections(packageName);
-    Set<Class<? extends Object>> types = reflections.getTypesAnnotatedWith(Puppet.class);
-    types.stream()
+    Set<Class<? extends Object>> discoveredTypes = reflections.getTypesAnnotatedWith(Puppet.class);
+    discoveredTypes.stream()
             .filter((type) -> (!type.isInterface()))
             .forEach((type) -> {
               registerInterfaces(type);
@@ -60,22 +60,22 @@ public class Voodoo {
   private void registerSuperTypes(Class type) {
     Class<?> superclass = type.getSuperclass();
     while (superclass != Object.class) {
-      TYPES.put(superclass, type);
+      types.put(superclass, type);
       superclass = type.getSuperclass();
     }
   }
 
   private void registerInterfaces(Class type) {
-    TYPES.put(type, type);
+    types.put(type, type);
     for (Class interFace : type.getInterfaces()) {
-      TYPES.put(interFace, type);
+      types.put(interFace, type);
     }
   }
 
   public <T> T instance(Class<T> clazz) {
     T newInstance = null;
     try {
-      Constructor<T> constructor = TYPES.get(clazz).getConstructor(new Class[]{});
+      Constructor<T> constructor = types.get(clazz).getConstructor(new Class[]{});
       newInstance = constructor.newInstance(new Object[]{});
       processFields(clazz, newInstance);
     } catch (Exception ex) {
