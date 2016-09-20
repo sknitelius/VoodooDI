@@ -23,7 +23,7 @@ import javax.inject.Inject;
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 @Puppet
-public class Houngans {
+public class Houngan {
 
   @Inject
   private Spirit spirit;
