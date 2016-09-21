@@ -52,6 +52,7 @@ public class Voodoo {
     discoveredTypes.stream()
             .filter((type) -> (!type.isInterface()))
             .forEach((type) -> {
+              types.put(type, type);
               registerInterfaces(type);
               registerSuperTypes(type);
             });
