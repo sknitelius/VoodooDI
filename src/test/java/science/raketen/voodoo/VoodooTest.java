@@ -17,7 +17,6 @@ package science.raketen.voodoo;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -26,9 +25,19 @@ import static org.junit.Assert.assertTrue;
 public class VoodooTest {
 
   @Test
-  public void test() throws Exception {
+  public void test() {
     Voodoo container = Voodoo.initalize();
     Houngan helloService = container.instance(Houngan.class);
     assertTrue(helloService.summon("Hogo").contains("Hogo"));
+  }
+  
+  @Test
+  public void testSingleton() {
+    Voodoo initalize = Voodoo.initalize();
+    God godRef1 = initalize.instance(God.class);
+    
+    God godRef2 = initalize.instance(God.class);
+    System.out.println(godRef1.toString() + godRef2.toString());
+    assertTrue(godRef1 == godRef2);
   }
 }

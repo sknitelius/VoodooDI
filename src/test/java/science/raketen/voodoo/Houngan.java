@@ -16,6 +16,7 @@
 package science.raketen.voodoo;
 
 import javax.inject.Inject;
+import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
  * Voodoo priest - can interact with the spirits. 

@@ -15,6 +15,8 @@
  */
 package science.raketen.voodoo;
 
+import science.raketen.voodoo.context.puppet.Puppet;
+
 
 /**
  *

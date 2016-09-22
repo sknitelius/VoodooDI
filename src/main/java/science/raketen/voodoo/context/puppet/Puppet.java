@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo;
+package science.raketen.voodoo.context.puppet;
 
 import java.lang.annotation.Inherited;
 import javax.inject.Scope;

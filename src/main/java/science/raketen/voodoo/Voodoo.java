@@ -15,14 +15,18 @@
  */
 package science.raketen.voodoo;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.reflections.Reflections;
+import science.raketen.voodoo.context.ContextualType;
+import science.raketen.voodoo.context.puppet.Puppet;
+import science.raketen.voodoo.context.puppet.PuppetContextualType;
+import science.raketen.voodoo.context.singleton.SingletonContextualType;
 
 /**
  * Voodoo DI Container - selecting @Puppet annotated types only. 
@@ -31,7 +35,7 @@ import org.reflections.Reflections;
  */
 public class Voodoo {
 
-  private final ConcurrentHashMap<Class, Class> types = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<Class, ContextualType> types = new ConcurrentHashMap<>();
 
   private Voodoo() {
   }
@@ -52,32 +56,44 @@ public class Voodoo {
     discoveredTypes.stream()
             .filter((type) -> (!type.isInterface()))
             .forEach((type) -> {
-              types.put(type, type);
-              registerInterfaces(type);
-              registerSuperTypes(type);
+              ContextualType puppetType = new PuppetContextualType(type);
+              types.put(type, puppetType);
+              registerInterfaces(puppetType);
+              registerSuperTypes(puppetType);
+            });
+
+    Set<Class<? extends Object>> discoveredSingletonTypes = reflections.getTypesAnnotatedWith(Singleton.class);
+    discoveredSingletonTypes.stream()
+            .filter((type) -> (!type.isInterface()))
+            .forEach((type) -> {
+              ContextualType singletonType = new SingletonContextualType(type);
+              types.put(type, singletonType);
+              registerInterfaces(singletonType);
+              registerSuperTypes(singletonType);
             });
   }
 
-  private void registerSuperTypes(Class type) {
+  private void registerSuperTypes(ContextualType context) {
+    Class type = context.getType();
     Class<?> superclass = type.getSuperclass();
     while (superclass != Object.class) {
-      types.put(superclass, type);
+      types.put(superclass, context);
       superclass = type.getSuperclass();
     }
   }
 
-  private void registerInterfaces(Class type) {
-    types.put(type, type);
+  private void registerInterfaces(ContextualType context) {
+    Class type = context.getType();
+    types.put(type, context);
     for (Class interFace : type.getInterfaces()) {
-      types.put(interFace, type);
+      types.put(interFace, context);
     }
   }
 
-  public <T> T instance(Class<T> clazz) {
+  public <T> T instance(Class clazz) {
     T newInstance = null;
     try {
-      Constructor<T> constructor = types.get(clazz).getConstructor(new Class[]{});
-      newInstance = constructor.newInstance(new Object[]{});
+      newInstance = (T) types.get(clazz).getContextualInstance();
       processFields(clazz, newInstance);
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
