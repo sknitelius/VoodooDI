@@ -16,7 +16,7 @@
 package science.raketen.voodoo.context;
 
 /**
- * Container interface to access the types contextual instance. 
+ * Used by scopes to provide access to the contextual instance. 
  * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
