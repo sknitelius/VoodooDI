@@ -21,12 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.reflections.Reflections;
 import science.raketen.voodoo.context.ContextualType;
 import science.raketen.voodoo.context.puppet.Puppet;
 import science.raketen.voodoo.context.puppet.PuppetContextualType;
-import science.raketen.voodoo.context.singleton.SingletonContextualType;
 
 /**
  * Voodoo DI Container - selecting @Puppet annotated types only. 
@@ -60,16 +58,6 @@ public class Voodoo {
               types.put(type, puppetType);
               registerInterfaces(puppetType);
               registerSuperTypes(puppetType);
-            });
-
-    Set<Class<? extends Object>> discoveredSingletonTypes = reflections.getTypesAnnotatedWith(Singleton.class);
-    discoveredSingletonTypes.stream()
-            .filter((type) -> (!type.isInterface()))
-            .forEach((type) -> {
-              ContextualType singletonType = new SingletonContextualType(type);
-              types.put(type, singletonType);
-              registerInterfaces(singletonType);
-              registerSuperTypes(singletonType);
             });
   }
 
