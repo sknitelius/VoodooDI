@@ -76,12 +76,12 @@ public class Voodoo {
 
   private void registerSuperTypes(Class type) {
     Class<?> supertype = type.getSuperclass();
-    while (supertype != Object.class) {
+    while (superclass != null && superclass != Object.class) {
       if (types.containsKey(supertype)) {
         throw new RuntimeException("Ambigious Puppet for " + supertype);
       }
       types.put(supertype, type);
-      supertype = type.getSuperclass();
+      superclass = type.getSuperclass() == superclass ? null : type.getSuperclass();
     }
   }
 
