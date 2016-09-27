@@ -16,12 +16,14 @@
 package science.raketen.test.puppets;
 
 import javax.inject.Inject;
+import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
  * Voodoo priest - can interact with the spirits. 
  * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
+@Puppet
 public class Houngan {
 
   @Inject

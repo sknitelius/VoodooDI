@@ -16,11 +16,13 @@
 package science.raketen.test.puppets;
 
 import javax.inject.Inject;
+import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
+@Puppet
 public class Scotland {
   @Inject
   private Highlander highlander;
