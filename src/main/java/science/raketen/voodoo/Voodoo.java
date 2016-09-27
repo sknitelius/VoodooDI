@@ -16,24 +16,24 @@
 package science.raketen.voodoo;
 
 import java.lang.reflect.Field;
-import java.util.Set;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import org.reflections.Reflections;
 import science.raketen.voodoo.context.ContextualType;
-import science.raketen.voodoo.context.puppet.Puppet;
 import science.raketen.voodoo.context.puppet.PuppetContextualType;
 
 /**
- * Voodoo DI Container - selecting @Puppet annotated types only. 
- * 
+ * Voodoo DI Container - with ContextualType support.
+ *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public class Voodoo {
 
-  private final ConcurrentHashMap<Class, ContextualType> types = new ConcurrentHashMap<>();
+  private final Map<Class, ContextualType> types = new ConcurrentHashMap<>();
 
   private Voodoo() {
   }
@@ -49,31 +49,35 @@ public class Voodoo {
   }
 
   private void scan(String packageName) {
-    Reflections reflections = new Reflections(packageName);
-    Set<Class<? extends Object>> discoveredTypes = reflections.getTypesAnnotatedWith(Puppet.class);
+    List<Class> discoveredTypes = TypeScanner.find(packageName);
     discoveredTypes.stream()
-            .filter((type) -> (!type.isInterface()))
-            .forEach((type) -> {
-              ContextualType puppetType = new PuppetContextualType(type);
-              types.put(type, puppetType);
-              registerInterfaces(puppetType);
-              registerSuperTypes(puppetType);
+            .filter((type) -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
+            .forEach((Class type) -> {
+              ContextualType contextualType = new PuppetContextualType(type);
+              types.put(type, contextualType);
+              registerInterfaces(contextualType);
+              registerSuperTypes(contextualType);
             });
   }
 
-  private void registerSuperTypes(ContextualType context) {
-    Class type = context.getType();
+  private void registerSuperTypes(ContextualType contextualType) {
+    Class type = contextualType.getType();
     Class<?> superclass = type.getSuperclass();
-    while (superclass != Object.class) {
-      types.put(superclass, context);
-      superclass = type.getSuperclass();
+    while (superclass != null && superclass != Object.class) {
+      if (types.containsKey(superclass)) {
+        throw new RuntimeException("Ambigious Puppet for " + superclass);
+      }
+      types.put(superclass, contextualType);
+      superclass = type.getSuperclass() == superclass ? null : type.getSuperclass();
     }
   }
 
   private void registerInterfaces(ContextualType context) {
     Class type = context.getType();
-    types.put(type, context);
     for (Class interFace : type.getInterfaces()) {
+      if (types.containsKey(interFace)) {
+        throw new RuntimeException("Ambigious Puppet for " + interFace);
+      }
       types.put(interFace, context);
     }
   }
