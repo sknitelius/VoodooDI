@@ -24,7 +24,7 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class Highlander {
-  public String catchFrace() {
+  public String catchPhrase() {
     return "There can be only one.";
   }
 }
