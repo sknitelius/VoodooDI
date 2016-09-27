@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo;
+package science.raketen.voodoo.puppets;
+
+import science.raketen.voodoo.context.puppet.Puppet;
 
 
 /**
- * Water Spirit.
- * 
+ *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class WaterSpirit implements Spirit {
+@Puppet
+public interface Spirit {
 
-  @Override
-  public String interact(String name) {
-    return String.format("Waterspirit %s summoned.", name);
-  }
+  public String interact(String name);
   
 }

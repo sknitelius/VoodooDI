@@ -17,6 +17,9 @@ package science.raketen.voodoo;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import science.raketen.voodoo.puppets.Highlander;
+import science.raketen.voodoo.puppets.Houngan;
+import science.raketen.voodoo.puppets.Scotland;
 
 /**
  *
@@ -25,7 +28,7 @@ import org.junit.Test;
 public class VoodooTest {
 
   @Test
-  public void test() {
+  public void testInterfaceInjection() {
     Voodoo container = Voodoo.initalize();
     Houngan helloService = container.instance(Houngan.class);
     assertTrue(helloService.summon("Hogo").contains("Hogo"));
@@ -34,10 +37,18 @@ public class VoodooTest {
   @Test
   public void testSingleton() {
     Voodoo initalize = Voodoo.initalize();
-    God godRef1 = initalize.instance(God.class);
+    Highlander highlanderRef1 = initalize.instance(Highlander.class);
     
-    God godRef2 = initalize.instance(God.class);
-    System.out.println(godRef1.toString() + godRef2.toString());
-    assertTrue(godRef1 == godRef2);
+    Highlander highlanderRef2 = initalize.instance(Highlander.class);
+    assertTrue(highlanderRef1 == highlanderRef2);
+  }
+  
+  @Test 
+  public void testSingletonInjection() {
+    Voodoo container = Voodoo.initalize();
+    Highlander highlander = container.instance(Highlander.class);
+    
+    Scotland scotland = container.instance(Scotland.class);
+    assertTrue(highlander == scotland.getHighlander());
   }
 }

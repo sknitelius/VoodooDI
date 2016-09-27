@@ -3,17 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package science.raketen.voodoo;
+package science.raketen.voodoo.puppets;
 
 import javax.inject.Singleton;
 
 /**
- *
+ * Highlander - There can be only one.
+ * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 @Singleton
-public class God {
-  public String getObjId() {
-    return this.toString();
+public class Highlander {
+  public String catchFrace() {
+    return "There can be only one.";
   }
 }
