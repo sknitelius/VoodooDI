@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.puppets;
+package science.raketen.test.puppets;
 
-import science.raketen.voodoo.context.puppet.Puppet;
-
+import javax.inject.Inject;
 
 /**
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-@Puppet
-public interface Spirit {
-
-  public String interact(String name);
+public class Scotland {
+  @Inject
+  private Highlander highlander;
+  
+  public Highlander getHighlander() {
+    return highlander;
+  }
   
 }

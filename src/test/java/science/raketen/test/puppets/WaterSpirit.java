@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.context.puppet;
+package science.raketen.test.puppets;
 
-import java.lang.annotation.Inherited;
-import javax.inject.Scope;
 
 /**
- * Voodoo Puppet Bean - provides a new instance every time.
+ * Water Spirit.
  * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-@Scope
-@Inherited
-public @interface Puppet {
+public class WaterSpirit implements Spirit {
+
+  @Override
+  public String interact(String name) {
+    return String.format("Waterspirit %s summoned.", name);
+  }
   
 }

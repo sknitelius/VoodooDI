@@ -54,8 +54,11 @@ public class Voodoo {
   private void scan(String packageName) {
     List<Class> discoveredTypes = TypeScanner.find(packageName);
     discoveredTypes.stream()
-            .filter((type) -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
-            .forEach((Class type) -> {
+            .filter((type) -> (!type.isInterface() 
+                    && !Modifier.isAbstract(type.getModifiers()) 
+                    && !type.getPackage().getName().startsWith("science.raketen.voodoo"))
+            ).forEach((Class type) -> {
+              System.out.println(type.getPackage().getName());
               ContextualType contextualType = buildContextualInstance(type);
               types.put(type, contextualType);
               registerInterfaces(contextualType);
