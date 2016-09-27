@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.test.puppets;
+package science.raketen.voodoo.puppets;
 
-import javax.inject.Inject;
 import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
+ * Water Spirit.
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 @Puppet
-public class Scotland {
-  @Inject
-  private Highlander highlander;
-  
-  public Highlander getHighlander() {
-    return highlander;
+public class WaterSpirit implements Spirit {
+
+  @Override
+  public String interact(String name) {
+    return String.format("Waterspirit %s summoned.", name);
   }
-  
+
 }

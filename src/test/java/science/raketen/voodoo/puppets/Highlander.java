@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package science.raketen.test.puppets;
+package science.raketen.voodoo.puppets;
 
 import javax.inject.Singleton;
 

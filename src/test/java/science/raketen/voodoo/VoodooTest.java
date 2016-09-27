@@ -17,9 +17,9 @@ package science.raketen.voodoo;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import science.raketen.test.puppets.Highlander;
-import science.raketen.test.puppets.Houngan;
-import science.raketen.test.puppets.Scotland;
+import science.raketen.voodoo.puppets.Highlander;
+import science.raketen.voodoo.puppets.Houngan;
+import science.raketen.voodoo.puppets.Scotland;
 
 /**
  *
