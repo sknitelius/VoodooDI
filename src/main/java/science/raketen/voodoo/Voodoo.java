@@ -15,21 +15,16 @@
  */
 package science.raketen.voodoo;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.reflections.Reflections;
 import science.raketen.voodoo.context.Context;
+import science.raketen.voodoo.context.ContextBuilder;
 import science.raketen.voodoo.context.ContextualType;
-import science.raketen.voodoo.context.puppet.PuppetContextualType;
-import science.raketen.voodoo.context.singleton.SingletonContextualType;
 
 /**
  * Voodoo DI Container - with support for Puppet and Singleton scopes.
@@ -38,10 +33,9 @@ import science.raketen.voodoo.context.singleton.SingletonContextualType;
  */
 public class Voodoo {
 
-  private final Map<Class, ContextualType> types = new ConcurrentHashMap<>();
+  private Map<Class, ContextualType> types;
 
-  private Voodoo() {
-  }
+  private Voodoo() {}
 
   public static Voodoo initalize() {
     return initalize("");
@@ -56,55 +50,8 @@ public class Voodoo {
   private void scan(String packageName) {
     Reflections reflections = new Reflections(packageName);
     Set<Class<? extends Context>> contexts = reflections.getSubTypesOf(Context.class);
-
-    contexts.stream().map(contextType -> processContexts(contextType))
-            .map(context -> ((Context) context).initalizeContext(reflections))
-            .flatMap(Collection::stream)
-            .forEach(contextualType -> {
-              types.put(contextualType.getType(), contextualType);
-              registerInterfaces(contextualType);
-              registerSuperTypes(contextualType);
-            });
-  }
-
-  private Context processContexts(Class<? extends Context> contextType) throws RuntimeException {
-    try {
-      return contextType.getConstructor(new Class[]{}).newInstance(new Object[]{});
-    } catch (Exception ex) {
-      Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
-    }
-  }
-
-  private ContextualType buildContextualInstance(Class type) {
-    Annotation singleton = type.getAnnotation(Singleton.class);
-    if (singleton == null) {
-      return new PuppetContextualType(type);
-    } else {
-      return new SingletonContextualType(type);
-    }
-  }
-
-  private void registerSuperTypes(ContextualType contextualType) {
-    Class type = contextualType.getType();
-    Class<?> superclass = type.getSuperclass();
-    while (superclass != null && superclass != Object.class) {
-      if (types.containsKey(superclass)) {
-        throw new RuntimeException("Ambigious Puppet for " + superclass);
-      }
-      types.put(superclass, contextualType);
-      superclass = type.getSuperclass() == superclass ? null : type.getSuperclass();
-    }
-  }
-
-  private void registerInterfaces(ContextualType context) {
-    Class type = context.getType();
-    for (Class interFace : type.getInterfaces()) {
-      if (types.containsKey(interFace)) {
-        throw new RuntimeException("Ambigious Puppet for " + interFace);
-      }
-      types.put(interFace, context);
-    }
+    
+    types = ContextBuilder.processTypes(packageName);
   }
 
   public <T> T instance(Class clazz) {
