@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo;
+package science.raketen.voodoo.puppets;
 
-import javax.inject.Inject;
-import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
- * Voodoo priest - can interact with the spirits. 
+ * Water Spirit.
  * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-@Puppet
-public class Houngan {
+public class WaterSpirit implements Spirit {
 
-  @Inject
-  private Spirit spirit;
-  
-  public String summon(String name) {
-    return spirit.interact(name);
+  @Override
+  public String interact(String name) {
+    return String.format("Waterspirit %s summoned.", name);
   }
   
 }
