@@ -14,6 +14,14 @@
     <name>Voodoo DI</name>
     <description>Voodoo DI - educational JSR-330 implementation.</description>
     <url>https://www.knitelius.com</url>
+    
+    <developers>
+        <developer>
+            <name>Stephan Knitelius</name>
+            <email>stephan@knitelius.com</email>
+            <url>https://www.knitelius.com</url>
+        </developer>
+    </developers>
  
     <licenses>
         <license>
