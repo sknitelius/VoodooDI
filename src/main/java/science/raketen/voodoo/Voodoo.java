@@ -17,13 +17,10 @@ package science.raketen.voodoo;
 
 import java.lang.reflect.Field;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import org.reflections.Reflections;
-import science.raketen.voodoo.context.Context;
-import science.raketen.voodoo.context.ContextBuilder;
+import science.raketen.voodoo.context.ContextScanner;
 import science.raketen.voodoo.context.ContextualType;
 
 /**
@@ -33,40 +30,33 @@ import science.raketen.voodoo.context.ContextualType;
  */
 public class Voodoo {
 
-  private Map<Class, ContextualType> types;
+  private final Map<Class, ContextualType> types;
 
-  private Voodoo() {}
+  private Voodoo(String packageName) {
+    types = ContextScanner.processContexts(packageName);
+  }
 
   public static Voodoo initalize() {
     return initalize("");
   }
 
   public static Voodoo initalize(String packageName) {
-    final Voodoo voodoo = new Voodoo();
-    voodoo.scan(packageName);
-    return voodoo;
+    return new Voodoo(packageName);
   }
 
-  private void scan(String packageName) {
-    Reflections reflections = new Reflections(packageName);
-    Set<Class<? extends Context>> contexts = reflections.getSubTypesOf(Context.class);
-    
-    types = ContextBuilder.processTypes(packageName);
-  }
-
-  public <T> T instance(Class clazz) {
-    T newInstance = null;
+  public <T> T instance(Class<T> type) {
+    T contextualInstance = null;
     try {
-      newInstance = (T) types.get(clazz).getContextualInstance();
-      processFields(clazz, newInstance);
+      contextualInstance = (T) types.get(type).getContextualInstance();
+      processFields(type, contextualInstance);
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
     }
-    return newInstance;
+    return contextualInstance;
   }
 
-  private <T> void processFields(Class<T> clazz, T targetInstance) {
-    for (Field field : clazz.getDeclaredFields()) {
+  private <T> void processFields(Class<T> type, T targetInstance) {
+    for (Field field : type.getDeclaredFields()) {
       Inject annotation = field.getAnnotation(Inject.class);
       if (annotation != null) {
         Object instance = instance(field.getType());

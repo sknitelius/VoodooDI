@@ -28,15 +28,15 @@ import science.raketen.voodoo.Voodoo;
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class ContextBuilder {
+public class ContextScanner {
 
-  private ContextBuilder() {}
+  private ContextScanner() {}
   
-  public static Map<Class, ContextualType> processTypes(String packageName) {
+  public static Map<Class, ContextualType> processContexts(String packageName) {
     Reflections reflections = new Reflections(packageName);
     Set<Class<? extends Context>> contexts = reflections.getSubTypesOf(Context.class);
     Map<Class, ContextualType> types = new ConcurrentHashMap<>();
-    contexts.parallelStream().map(contextType -> processContexts(contextType))
+    contexts.parallelStream().map(contextType -> ContextScanner.constructContext(contextType))
             .map(context -> ((Context) context).initalizeContext(reflections))
             .flatMap(Collection::stream)
             .forEach(contextualType -> {
@@ -69,7 +69,7 @@ public class ContextBuilder {
     }
   }
 
-  private static Context processContexts(Class<? extends Context> contextType) throws RuntimeException {
+  private static Context constructContext(Class<? extends Context> contextType) throws RuntimeException {
     try {
       return contextType.getConstructor(new Class[]{}).newInstance(new Object[]{});
     } catch (Exception ex) {
