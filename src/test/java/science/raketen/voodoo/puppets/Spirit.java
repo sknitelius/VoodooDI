@@ -18,7 +18,7 @@ package science.raketen.voodoo.puppets;
 
 /**
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public interface Spirit {
 

@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 /**
  * Highlander - There can be only one.
  * 
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 @Singleton
 public class Highlander {

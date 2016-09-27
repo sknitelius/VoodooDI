@@ -26,7 +26,7 @@ import science.raketen.voodoo.context.ContextualType;
 /**
  * Voodoo DI Container - with support for Puppet and Singleton scopes.
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class Voodoo {
 

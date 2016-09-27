@@ -23,7 +23,7 @@ import science.raketen.voodoo.puppets.Scotland;
 
 /**
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class VoodooTest {
 

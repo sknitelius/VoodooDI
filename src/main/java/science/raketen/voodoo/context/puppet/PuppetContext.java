@@ -25,7 +25,7 @@ import science.raketen.voodoo.context.ContextualType;
 
 /**
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class PuppetContext implements Context {
 

@@ -20,7 +20,7 @@ import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 @Puppet
 public class Scotland {

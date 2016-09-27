@@ -23,7 +23,7 @@ import science.raketen.voodoo.context.ContextualType;
 /**
  * Puppet scope - provides a new instance every time.
  * 
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class PuppetContextualType<T> extends ContextualType {
 

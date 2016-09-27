@@ -13,7 +13,7 @@ import science.raketen.voodoo.context.ContextualType;
 /**
  * Manages the singleton contextual instance.
  * 
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class SingletonContextualType<T> extends ContextualType {
 

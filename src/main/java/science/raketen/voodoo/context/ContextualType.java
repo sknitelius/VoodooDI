@@ -18,7 +18,7 @@ package science.raketen.voodoo.context;
 /**
  * Used by scopes to provide access to the contextual instance. 
  * 
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public abstract class ContextualType<T> {
   

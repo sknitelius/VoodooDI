@@ -26,7 +26,7 @@ import science.raketen.voodoo.Voodoo;
 
 /**
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class ContextScanner {
 
