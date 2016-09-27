@@ -97,19 +97,19 @@ public class Voodoo {
     }
   }
 
-  public <T> T instance(Class clazz) {
-    T newInstance = null;
+  public <T> T instance(Class<T> type) {
+    T contextualInstance = null;
     try {
-      newInstance = (T) types.get(clazz).getContextualInstance();
-      processFields(clazz, newInstance);
+      contextualInstance = (T) types.get(type).getContextualInstance();
+      processFields(type, contextualInstance);
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
     }
-    return newInstance;
+    return contextualInstance;
   }
 
-  private <T> void processFields(Class<T> clazz, T targetInstance) {
-    for (Field field : clazz.getDeclaredFields()) {
+  private <T> void processFields(Class<T> type, T targetInstance) {
+    for (Field field : type.getDeclaredFields()) {
       Inject annotation = field.getAnnotation(Inject.class);
       if (annotation != null) {
         Object instance = instance(field.getType());
