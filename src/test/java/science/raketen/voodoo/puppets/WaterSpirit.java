@@ -15,17 +15,19 @@
  */
 package science.raketen.voodoo.puppets;
 
+import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
  * Water Spirit.
- * 
+ *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
+@Puppet
 public class WaterSpirit implements Spirit {
 
   @Override
   public String interact(String name) {
     return String.format("Waterspirit %s summoned.", name);
   }
-  
+
 }
