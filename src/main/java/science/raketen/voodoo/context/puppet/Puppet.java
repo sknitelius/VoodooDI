@@ -19,7 +19,7 @@ import java.lang.annotation.Inherited;
 import javax.inject.Scope;
 
 /**
- * Voodoo Puppet Bean - pseudo scope resulting in a direct injection.
+ * Voodoo Puppet Bean - provides a new instance every time.
  * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */

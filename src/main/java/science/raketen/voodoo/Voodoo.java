@@ -15,6 +15,7 @@
  */
 package science.raketen.voodoo;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -23,11 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import science.raketen.voodoo.context.ContextualType;
 import science.raketen.voodoo.context.puppet.PuppetContextualType;
+import science.raketen.voodoo.context.singleton.SingletonContextualType;
 
 /**
- * Voodoo DI Container - with ContextualType support.
+ * Voodoo DI Container - with support for Puppet and Singleton scopes.
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
@@ -53,11 +56,20 @@ public class Voodoo {
     discoveredTypes.stream()
             .filter((type) -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
             .forEach((Class type) -> {
-              ContextualType contextualType = new PuppetContextualType(type);
+              ContextualType contextualType = buildContextualInstance(type);
               types.put(type, contextualType);
               registerInterfaces(contextualType);
               registerSuperTypes(contextualType);
             });
+  }
+
+  private ContextualType buildContextualInstance(Class type) {
+    Annotation singleton = type.getAnnotation(Singleton.class);
+    if(singleton == null) {
+      return new PuppetContextualType(type);
+    } else {
+      return new SingletonContextualType(type);
+    }
   }
 
   private void registerSuperTypes(ContextualType contextualType) {

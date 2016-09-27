@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package science.raketen.voodoo.context.puppet;
+package science.raketen.voodoo.context.singleton;
 
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;
@@ -11,25 +11,32 @@ import java.util.logging.Logger;
 import science.raketen.voodoo.context.ContextualType;
 
 /**
- * Puppet scope - provides a new instance every time.
+ * Manages the singleton contextual instance.
  * 
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class PuppetContextualType<T> extends ContextualType {
+public class SingletonContextualType<T> extends ContextualType {
 
-  public PuppetContextualType(Class type) {
+  private final T singleton;
+  
+  public SingletonContextualType(Class type) {
     super(type);
+    singleton = createSingleton(type);
+  }
+
+  private T createSingleton(Class type) {
+    try {
+      Constructor<T> constructor = type.getConstructor(new Class[]{});
+      return constructor.newInstance(new Object[]{});
+    } catch (Exception ex) {
+      Logger.getLogger(SingletonContextualType.class.getName()).log(Level.SEVERE, null, ex);
+      throw new RuntimeException(ex);
+    }
   }
 
   @Override
   public T getContextualInstance() {
-    try {
-      Constructor<T> constructor = getType().getConstructor(new Class[]{});
-      return constructor.newInstance(new Object[]{});
-    } catch (Exception ex) {
-      Logger.getLogger(PuppetContextualType.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
-    }
+    return singleton;
   }
   
 }
