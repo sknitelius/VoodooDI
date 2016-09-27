@@ -36,7 +36,7 @@ public class ContextBuilder {
     Reflections reflections = new Reflections(packageName);
     Set<Class<? extends Context>> contexts = reflections.getSubTypesOf(Context.class);
     Map<Class, ContextualType> types = new ConcurrentHashMap<>();
-    contexts.stream().map(contextType -> processContexts(contextType))
+    contexts.parallelStream().map(contextType -> processContexts(contextType))
             .map(context -> ((Context) context).initalizeContext(reflections))
             .flatMap(Collection::stream)
             .forEach(contextualType -> {
