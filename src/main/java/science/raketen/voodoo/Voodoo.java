@@ -16,9 +16,12 @@
 package science.raketen.voodoo;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import science.raketen.voodoo.context.ContextProcessor;
 import science.raketen.voodoo.context.ContextualType;
@@ -49,6 +52,7 @@ public class Voodoo {
     try {
       contextualInstance = (T) types.get(type).getContextualInstance();
       processFields(type, contextualInstance);
+      processPostConstruct(type, contextualInstance);
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -67,6 +71,21 @@ public class Voodoo {
           Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
           throw new RuntimeException(ex);
         }
+      }
+    }
+  }
+
+  private <T> void processPostConstruct(Class type, T instance) {
+    Method[] declaredMethods = type.getDeclaredMethods();
+    for (Method method : declaredMethods) {
+      if (method.getAnnotation(PostConstruct.class) != null) {
+        try {
+          method.setAccessible(true);
+          method.invoke(instance, new Object[]{});
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+          Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+          throw new RuntimeException(ex);
+        } 
       }
     }
   }

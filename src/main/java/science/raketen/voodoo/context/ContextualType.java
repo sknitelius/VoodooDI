@@ -28,9 +28,9 @@ public abstract class ContextualType<T> {
     this.type = type;
   }
     
-  public abstract T getContextualInstance();
-  
   public Class<T> getType() {
     return type;
   }
+  
+  public abstract T getContextualInstance();
 }
