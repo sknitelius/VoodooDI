@@ -85,7 +85,7 @@ public class Voodoo {
     }
   }
 
-  public <T> T instance(Class type) {
+  public <T> T instance(Class<T> type) {
     T newInstance = null;
     try {
       newInstance = (T) types.get(type).getContextualInstance();
