@@ -18,7 +18,7 @@ Using VoodooDI is simple matter of including the dependency in your pom.
   <dependency>
     <groupId>science.raketen.voodoo</groupId>
     <artifactId>VoodooDI</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
   </dependency>
 ```
 
