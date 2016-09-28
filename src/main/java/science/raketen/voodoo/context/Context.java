@@ -16,7 +16,7 @@
 package science.raketen.voodoo.context;
 
 import java.util.List;
-import org.reflections.Reflections;
+import java.util.Set;
 
 /**
  *
@@ -26,6 +26,6 @@ public interface Context {
   
   public Class getContextualAnnotation();
   
-  public List<? extends ContextualType> initalizeContext(Reflections reflections);
+  public List<? extends ContextualType> initalizeContext(Set<Class> types);
   
 }

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import org.reflections.Reflections;
 import science.raketen.voodoo.context.Context;
 import science.raketen.voodoo.context.ContextualType;
 
@@ -38,9 +37,8 @@ public class SingletonContext implements Context {
   }
 
   @Override
-  public List<? extends ContextualType> initalizeContext(Reflections reflections) {
-    Set<Class<?>> puppetTypes = reflections.getTypesAnnotatedWith(SCOPE_ANNOTATION);
-    return puppetTypes.stream()
+  public List<ContextualType> initalizeContext(Set<Class> types) {
+    return types.stream()
             .filter(type -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
             .map(type -> new SingletonContextualType(type)).collect(Collectors.toList());
   }

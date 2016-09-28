@@ -30,8 +30,8 @@ public class SingletonContextualType<T> extends ContextualType {
       return constructor.newInstance(new Object[]{});
     } catch (Exception ex) {
       Logger.getLogger(SingletonContextualType.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
     }
+    return null;
   }
 
   @Override
