@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import science.raketen.voodoo.context.ContextScanner;
+import science.raketen.voodoo.context.ContextProcessor;
 import science.raketen.voodoo.context.ContextualType;
 
 /**
@@ -33,7 +33,7 @@ public class Voodoo {
   private final Map<Class, ContextualType> types;
 
   private Voodoo(String packageName) {
-    types = ContextScanner.processContexts(packageName);
+    types = ContextProcessor.process(packageName);
   }
 
   public static Voodoo initalize() {

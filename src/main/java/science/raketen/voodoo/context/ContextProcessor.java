@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
@@ -29,28 +30,35 @@ import science.raketen.voodoo.Voodoo;
  *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public class ContextScanner {
+public class ContextProcessor {
 
-  private ContextScanner() {
+  private ContextProcessor() {
   }
 
-  public static Map<Class, ContextualType> processContexts(String packageName) {
+  public static Map<Class, ContextualType> process(String packageName) {
     Reflections reflections = new Reflections(new ConfigurationBuilder().addUrls(ClasspathHelper.forManifest()));
     Set<Class<? extends Context>> contexts = reflections.getSubTypesOf(Context.class);
 
+    Stream<ContextualType> contextualTypes = contexts.parallelStream()
+            .map(contextType -> constructContext(contextType))
+            .map(context -> initalizeContext(context, reflections))
+            .flatMap(ctypes -> ctypes.stream());
+
+    return mapTypes(contextualTypes);
+  }
+
+  private static Set<ContextualType> initalizeContext(Context context, Reflections reflections) {
+    Set annotatedTypes = reflections.getTypesAnnotatedWith(context.getContextAnnotation());
+    return context.initalizeContext(annotatedTypes);
+  }
+
+  private static Map<Class, ContextualType> mapTypes(Stream<ContextualType> contextualTypes) {
     final Map<Class, ContextualType> types = new ConcurrentHashMap<>();
-    contexts.parallelStream().map(contextType -> ContextScanner.constructContext(contextType))
-            .map(context -> {
-              Set annotatedTypes = reflections.getTypesAnnotatedWith(context.getContextAnnotation());
-              return context.initalizeContext(annotatedTypes);
-            })
-            .flatMap(set -> ((Set<ContextualType>) set).stream())
-            .forEach(ct -> {
-              ContextualType contextualType = (ContextualType) ct;
-              types.put(contextualType.getType(), contextualType);
-              registerInterfaces(contextualType, types);
-              registerSuperTypes(contextualType, types);
-            });
+    contextualTypes.forEach(contextualType -> {
+      types.put(contextualType.getType(), contextualType);
+      registerInterfaces(contextualType, types);
+      registerSuperTypes(contextualType, types);
+    });
     return types;
   }
 
@@ -81,8 +89,7 @@ public class ContextScanner {
       return contextType.getConstructor(new Class[]{}).newInstance(new Object[]{});
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-//      throw new RuntimeException(ex);
+      throw new RuntimeException(ex);
     }
-    return null;
   }
 }
