@@ -27,7 +27,7 @@ public class PuppetContext extends Context {
   private static final Class SCOPE_ANNOTATION = Puppet.class;
   
   @Override
-  public Class getContextualAnnotation() {
+  public Class getContextAnnotation() {
     return SCOPE_ANNOTATION;
   }
 

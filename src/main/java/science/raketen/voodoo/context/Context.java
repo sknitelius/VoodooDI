@@ -28,10 +28,12 @@ public abstract class Context {
   public Set<? extends ContextualType> initalizeContext(Set<Class> types) {
     return types.stream()
             .filter(type -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
-            .map(type -> getContextualType(type)).collect(Collectors.toSet());
+            .map(type -> getContextualType(type))
+            .filter(type -> type != null)
+            .collect(Collectors.toSet());
   }
   
-  protected abstract Class getContextualAnnotation();
+  public abstract Class getContextAnnotation();
   
   protected abstract ContextualType getContextualType(Class type);
 }

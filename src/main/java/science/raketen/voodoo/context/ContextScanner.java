@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 import science.raketen.voodoo.Voodoo;
 
 /**
@@ -36,18 +35,16 @@ public class ContextScanner {
   }
 
   public static Map<Class, ContextualType> processContexts(String packageName) {
-    Reflections contextScan = new Reflections(new ConfigurationBuilder().addUrls(ClasspathHelper.forManifest()));
-    Set<Class<? extends Context>> contexts = contextScan.getSubTypesOf(Context.class);
+    Reflections reflections = new Reflections(new ConfigurationBuilder().addUrls(ClasspathHelper.forManifest()));
+    Set<Class<? extends Context>> contexts = reflections.getSubTypesOf(Context.class);
 
-    Reflections typeScan = new Reflections(
-            new ConfigurationBuilder()
-                    .filterInputsBy(new FilterBuilder().exclude("com.google.*").include(packageName))
-                    .setUrls(ClasspathHelper.forManifest()));
-    
     final Map<Class, ContextualType> types = new ConcurrentHashMap<>();
     contexts.parallelStream().map(contextType -> ContextScanner.constructContext(contextType))
-            .map(context -> context.initalizeContext(typeScan.getTypesAnnotatedWith(context.getContextualAnnotation())))
-            .flatMap(list -> ((Set<Class>)list).stream())
+            .map(context -> {
+              Set annotatedTypes = reflections.getTypesAnnotatedWith(context.getContextAnnotation());
+              return context.initalizeContext(annotatedTypes);
+            })
+            .flatMap(set -> ((Set<ContextualType>) set).stream())
             .forEach(ct -> {
               ContextualType contextualType = (ContextualType) ct;
               types.put(contextualType.getType(), contextualType);
