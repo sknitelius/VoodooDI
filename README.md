@@ -14,11 +14,21 @@ $ git clone https://github.com/sknitelius/VoodooDI.git
 ## Usage as Dependency
 Using VoodooDI is simple matter of including the dependency in your pom. 
 
+Latest stable version:
 ```xml
   <dependency>
     <groupId>science.raketen.voodoo</groupId>
     <artifactId>VoodooDI</artifactId>
     <version>0.0.3</version>
+  </dependency>
+```
+
+Latest snapshot:
+```xml
+  <dependency>
+    <groupId>science.raketen.voodoo</groupId>
+    <artifactId>VoodooDI</artifactId>
+    <version>0.0.4-SNAPSHOT</version>
   </dependency>
 ```
 
