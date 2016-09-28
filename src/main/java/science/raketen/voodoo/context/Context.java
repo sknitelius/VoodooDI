@@ -15,17 +15,23 @@
  */
 package science.raketen.voodoo.context;
 
-import java.util.List;
+import java.lang.reflect.Modifier;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public interface Context {
+public abstract class Context {
   
-  public Class getContextualAnnotation();
+  public Set<? extends ContextualType> initalizeContext(Set<Class> types) {
+    return types.stream()
+            .filter(type -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
+            .map(type -> getContextualType(type)).collect(Collectors.toSet());
+  }
   
-  public List<? extends ContextualType> initalizeContext(Set<Class> types);
+  protected abstract Class getContextualAnnotation();
   
+  protected abstract ContextualType getContextualType(Class type);
 }

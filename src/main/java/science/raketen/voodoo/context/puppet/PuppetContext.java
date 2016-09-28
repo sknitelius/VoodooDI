@@ -15,10 +15,6 @@
  */
 package science.raketen.voodoo.context.puppet;
 
-import java.lang.reflect.Modifier;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import science.raketen.voodoo.context.Context;
 import science.raketen.voodoo.context.ContextualType;
 
@@ -26,7 +22,7 @@ import science.raketen.voodoo.context.ContextualType;
  *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public class PuppetContext implements Context {
+public class PuppetContext extends Context {
 
   private static final Class SCOPE_ANNOTATION = Puppet.class;
   
@@ -36,10 +32,8 @@ public class PuppetContext implements Context {
   }
 
   @Override
-  public List<ContextualType> initalizeContext(Set<Class> types) {
-    return types.stream()
-            .filter(type -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
-            .map(type -> new PuppetContextualType(type)).collect(Collectors.toList());
+  protected ContextualType getContextualType(Class type) {
+    return new PuppetContextualType(type);
   }
 
 }

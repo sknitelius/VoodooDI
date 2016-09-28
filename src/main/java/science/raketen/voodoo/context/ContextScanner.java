@@ -15,7 +15,6 @@
  */
 package science.raketen.voodoo.context;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +47,7 @@ public class ContextScanner {
     final Map<Class, ContextualType> types = new ConcurrentHashMap<>();
     contexts.parallelStream().map(contextType -> ContextScanner.constructContext(contextType))
             .map(context -> context.initalizeContext(typeScan.getTypesAnnotatedWith(context.getContextualAnnotation())))
-            .flatMap(list -> ((List<Class>)list).stream())
+            .flatMap(list -> ((Set<Class>)list).stream())
             .forEach(ct -> {
               ContextualType contextualType = (ContextualType) ct;
               types.put(contextualType.getType(), contextualType);
