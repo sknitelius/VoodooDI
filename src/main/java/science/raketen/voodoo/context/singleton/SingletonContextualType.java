@@ -18,8 +18,8 @@ import science.raketen.voodoo.context.ContextualType;
  */
 public class SingletonContextualType<T> extends ContextualType {
 
-  private T singleton;
   private final ReentrantLock reentrantLock = new ReentrantLock();
+  private T singleton;
   
   
   public SingletonContextualType(Class type) {
