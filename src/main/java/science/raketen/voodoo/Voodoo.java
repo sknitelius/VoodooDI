@@ -83,7 +83,7 @@ public class Voodoo {
 
   private void registerSuperTypes(Class type) {
     Class<?> supertype = type.getSuperclass();
-    while (type != null && type != Object.class) {
+    while (type != null && supertype != Object.class) {
       if (types.containsKey(supertype)) {
         throw new RuntimeException("Ambigious Puppet for " + supertype);
       }
@@ -104,7 +104,7 @@ public class Voodoo {
 
   public <T> T instance(Class<T> type) {
     try {
-      T newInstance = construct(type);
+      T newInstance = (T) construct(types.get(type));
       processFields(type, newInstance);
       processPostConstruct(type, newInstance);
       return newInstance;
