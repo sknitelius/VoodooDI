@@ -66,9 +66,8 @@ public class Voodoo {
   private void scan(String pakageName) {
     List<Class> discoveredTypes = TypeScanner.find(pakageName);
     discoveredTypes.stream()
-            .filter((type)
-                    -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
-            .forEach((type) -> {
+            .filter(type -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
+            .forEach(type -> {
               registerInterfaces(type);
               registerSuperTypes(type);
             });
@@ -95,12 +94,12 @@ public class Voodoo {
     }
   }
 
-  public <T> T instance(Class<T> clazz) {
+  public <T> T instance(Class<T> type) {
     T newInstance = null;
     try {
-      Constructor<T> constructor = types.get(clazz).getConstructor(new Class[]{});
+      Constructor<T> constructor = types.get(type).getConstructor(new Class[]{});
       newInstance = constructor.newInstance(new Object[]{});
-      processFields(clazz, newInstance);
+      processFields(type, newInstance);
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
       throw new RuntimeException(ex);
