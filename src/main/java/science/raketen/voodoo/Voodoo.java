@@ -17,12 +17,16 @@ package science.raketen.voodoo;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -36,7 +40,7 @@ public class Voodoo {
    * Maps the relevant concrete implementation to the target type.
    */
   private final Map<Class, Class> types = new ConcurrentHashMap<>();
-
+  
   private Voodoo() {
   }
 
@@ -62,7 +66,7 @@ public class Voodoo {
     voodoo.scan(packageName);
     return voodoo;
   }
-
+  
   private void scan(String pakageName) {
     List<Class> discoveredTypes = TypeScanner.find(pakageName);
     discoveredTypes.stream()
@@ -72,7 +76,7 @@ public class Voodoo {
               registerSuperTypes(type);
             });
   }
-
+  
   private void registerSuperTypes(Class type) {
     Class<?> supertype = type.getSuperclass();
     while (type != null && type != Object.class) {
@@ -83,7 +87,7 @@ public class Voodoo {
       type = type.getSuperclass() == type ? null : type.getSuperclass();
     }
   }
-
+  
   private void registerInterfaces(Class type) {
     types.put(type, type);
     for (Class interFace : type.getInterfaces()) {
@@ -93,22 +97,39 @@ public class Voodoo {
       types.put(interFace, type);
     }
   }
-
+  
   public <T> T instance(Class<T> type) {
     T newInstance = null;
     try {
       Constructor<T> constructor = types.get(type).getConstructor(new Class[]{});
       newInstance = constructor.newInstance(new Object[]{});
       processFields(type, newInstance);
+      processPostConstruct(type, newInstance);
     } catch (Exception ex) {
       Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
       throw new RuntimeException(ex);
     }
     return newInstance;
   }
-
-  private <T> void processFields(Class<T> clazz, T targetInstance) {
-    for (Field field : clazz.getDeclaredFields()) {
+  
+  private <T> void processPostConstruct(Class<T> type, T targetInstance) {
+    Method[] declaredMethods = type.getDeclaredMethods();
+    
+    Arrays.stream(declaredMethods)
+            .filter(method -> method.getAnnotation(PostConstruct.class) != null)
+            .forEach(postConstructMethod -> {
+              try {
+                postConstructMethod.setAccessible(true);
+                postConstructMethod.invoke(targetInstance, new Object[]{});
+              } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+                throw new RuntimeException(ex);
+              }
+            });
+  }
+  
+  private <T> void processFields(Class<T> type, T targetInstance) {
+    for (Field field : type.getDeclaredFields()) {
       Inject annotation = field.getAnnotation(Inject.class);
       if (annotation != null) {
         Object instance = instance(field.getType());
