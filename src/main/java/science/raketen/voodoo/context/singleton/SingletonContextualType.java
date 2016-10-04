@@ -5,10 +5,7 @@
  */
 package science.raketen.voodoo.context.singleton;
 
-import java.lang.reflect.Constructor;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import science.raketen.voodoo.context.ContextualType;
 
 /**

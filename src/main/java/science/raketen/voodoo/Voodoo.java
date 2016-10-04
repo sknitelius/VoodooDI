@@ -15,15 +15,7 @@
  */
 package science.raketen.voodoo;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import science.raketen.voodoo.context.ContextProcessor;
 import science.raketen.voodoo.context.ContextualType;
 
