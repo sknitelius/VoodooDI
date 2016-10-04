@@ -15,9 +15,6 @@
  */
 package science.raketen.voodoo.context.puppet;
 
-import java.lang.reflect.Constructor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import science.raketen.voodoo.context.ContextualType;
 
 /**
@@ -27,19 +24,12 @@ import science.raketen.voodoo.context.ContextualType;
  */
 public class PuppetContextualType<T> extends ContextualType {
 
-  public PuppetContextualType(Class type) {
+  public PuppetContextualType(Class<T> type) {
     super(type);
   }
 
   @Override
   public T getContextualInstance() {
-    try {
-      Constructor<T> constructor = getType().getConstructor(new Class[]{});
-      return constructor.newInstance(new Object[]{});
-    } catch (Exception ex) {
-      Logger.getLogger(PuppetContextualType.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
-    }
+      return (T) createInstance(getType());
   }
-  
 }

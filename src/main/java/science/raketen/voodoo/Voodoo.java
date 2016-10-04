@@ -35,7 +35,9 @@ import science.raketen.voodoo.context.ContextualType;
 public class Voodoo {
 
   private final Map<Class, ContextualType> types;
-
+  
+  private static Voodoo voodoo;
+  
   private Voodoo(String packageName) {
     types = ContextProcessor.process(packageName);
   }
@@ -45,50 +47,19 @@ public class Voodoo {
   }
 
   public static Voodoo initalize(String packageName) {
-    return new Voodoo(packageName);
+    voodoo = new Voodoo(packageName);
+    return voodoo;
+  }
+  
+  public static Voodoo getCurrent() {
+      if(voodoo == null) {
+          throw new RuntimeException("Voodoo has not been initalized.");
+      }
+      return voodoo;
   }
 
   public <T> T instance(Class<T> type) {
-    T contextualInstance = null;
-    try {
-      contextualInstance = (T) types.get(type).getContextualInstance();
-      processFields(type, contextualInstance);
-      processPostConstruct(type, contextualInstance);
-    } catch (Exception ex) {
-      Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    return contextualInstance;
+      return (T) types.get(type).getContextualInstance();
   }
 
-  private <T> void processFields(Class<T> type, T targetInstance) {
-    for (Field field : type.getDeclaredFields()) {
-      Inject annotation = field.getAnnotation(Inject.class);
-      if (annotation != null) {
-        Object instance = instance(field.getType());
-        field.setAccessible(true);
-        try {
-          field.set(targetInstance, instance);
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
-          Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-          throw new RuntimeException(ex);
-        }
-      }
-    }
-  }
-
-  private <T> void processPostConstruct(Class type, T instance) {
-    Method[] declaredMethods = type.getDeclaredMethods();
-
-    Arrays.stream(declaredMethods)
-            .filter(method -> method.getAnnotation(PostConstruct.class) != null)
-            .forEach(postConstructMethod -> {
-              try {
-                postConstructMethod.setAccessible(true);
-                postConstructMethod.invoke(instance, new Object[]{});
-              } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException(ex);
-              }
-            });
-  }
 }
