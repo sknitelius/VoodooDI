@@ -37,138 +37,137 @@ import javax.inject.Inject;
  */
 public class Voodoo {
 
-  private static final Object[] EMPTY_OBJ_ARRAY = new Object[]{};
-  private static final Class[] EMPTY_TYPE_ARRAY = new Class[]{};
+    private static final Object[] EMPTY_OBJ_ARRAY = new Object[]{};
+    private static final Class[] EMPTY_TYPE_ARRAY = new Class[]{};
 
-  /**
-   * Maps the relevant concrete implementation to the target type.
-   */
-  private final Map<Class, Class> types = new ConcurrentHashMap<>();
+    /**
+     * Maps the relevant concrete implementation to the target type.
+     */
+    private final Map<Class, Class> types = new ConcurrentHashMap<>();
 
-  private Voodoo() {
-  }
-
-  /**
-   * Scans all files found on Classpath.
-   *
-   * @return Voodoo - Voodoo container instance.
-   */
-  public static Voodoo initalize() {
-    final Voodoo voodoo = new Voodoo();
-    voodoo.scan("");
-    return initalize("");
-  }
-
-  /**
-   * Limits scanning to the specified package.
-   *
-   * @param packageName - name of package to be scanned.
-   * @return Voodoo - Voodoo container instance.
-   */
-  public static Voodoo initalize(String packageName) {
-    final Voodoo voodoo = new Voodoo();
-    voodoo.scan(packageName);
-    return voodoo;
-  }
-
-  private void scan(String pakageName) {
-    List<Class> discoveredTypes = TypeScanner.find(pakageName);
-    discoveredTypes.stream()
-            .filter(type -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
-            .forEach(type -> {
-              registerInterfaces(type);
-              registerSuperTypes(type);
-            });
-  }
-
-  private void registerSuperTypes(Class type) {
-    Class<?> supertype = type.getSuperclass();
-    while (type != null && supertype != Object.class) {
-      if (types.containsKey(supertype)) {
-        throw new RuntimeException("Ambigious Puppet for " + supertype);
-      }
-      types.put(supertype, type);
-      type = type.getSuperclass() == type ? null : type.getSuperclass();
+    private Voodoo() {
     }
-  }
 
-  private void registerInterfaces(Class type) {
-    types.put(type, type);
-    for (Class interFace : type.getInterfaces()) {
-      if (types.containsKey(interFace)) {
-        throw new RuntimeException("Ambigious Puppet for " + interFace);
-      }
-      types.put(interFace, type);
+    /**
+     * Scans all files found on Classpath.
+     *
+     * @return Voodoo - Voodoo container instance.
+     */
+    public static Voodoo initalize() {
+        final Voodoo voodoo = new Voodoo();
+        voodoo.scan("");
+        return initalize("");
     }
-  }
 
-  public <T> T instance(Class<T> type) {
-    try {
-      T newInstance = (T) construct(types.get(type));
-      processFields(type, newInstance);
-      processPostConstruct(type, newInstance);
-      return newInstance;
-    } catch (Exception ex) {
-      Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
+    /**
+     * Limits scanning to the specified package.
+     *
+     * @param packageName - name of package to be scanned.
+     * @return Voodoo - Voodoo container instance.
+     */
+    public static Voodoo initalize(String packageName) {
+        final Voodoo voodoo = new Voodoo();
+        voodoo.scan(packageName);
+        return voodoo;
     }
-  }
 
-  private <T> T construct(Class<T> type) throws Exception {
-    List<Constructor<?>> injectableConstructors = Arrays.stream(type.getConstructors())
-            .filter(constructor -> constructor.getAnnotation(Inject.class) != null)
-            .collect(Collectors.toList());
-
-    Constructor<T> constructor = null;
-    Object[] params = EMPTY_OBJ_ARRAY;
-
-    switch (injectableConstructors.size()) {
-      case 0:
-        //Find default constructor.
-        constructor = type.getConstructor(EMPTY_TYPE_ARRAY);
-        break;
-      case 1:
-        constructor = (Constructor<T>) injectableConstructors.get(0);
-        Class<?>[] parameterTypes = constructor.getParameterTypes();
-        params = Arrays.stream(parameterTypes)
-                .map(paramType -> instance(paramType))
-                .toArray();
-        break;
-      default:
-        throw new RuntimeException("Ambigious Injectable constructor for " + type);
+    private void scan(String pakageName) {
+        List<Class> discoveredTypes = TypeScanner.find(pakageName);
+        discoveredTypes.stream()
+                .filter(type -> (!type.isInterface() && !Modifier.isAbstract(type.getModifiers())))
+                .forEach(type -> {
+                    registerInterfaces(type);
+                    registerSuperTypes(type);
+                });
     }
-    return constructor.newInstance(params);
-  }
 
-  private <T> void processFields(Class<T> type, T targetInstance) {
-    for (Field field : type.getDeclaredFields()) {
-      Inject annotation = field.getAnnotation(Inject.class);
-      if (annotation != null) {
-        Object instance = instance(field.getType());
-        field.setAccessible(true);
-        try {
-          field.set(targetInstance, instance);
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
-          Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-          throw new RuntimeException(ex);
+    private void registerSuperTypes(Class type) {
+        Class<?> supertype = type.getSuperclass();
+        while (type != null && supertype != Object.class) {
+            if (types.containsKey(supertype)) {
+                throw new RuntimeException("Ambigious Puppet for " + supertype);
+            }
+            types.put(supertype, type);
+            type = type.getSuperclass() == type ? null : type.getSuperclass();
         }
-      }
     }
-  }
-  
-  private <T> void processPostConstruct(Class<T> type, T targetInstance) {
-    Method[] declaredMethods = type.getDeclaredMethods();
 
-    Arrays.stream(declaredMethods)
-            .filter(method -> method.getAnnotation(PostConstruct.class) != null)
-            .forEach(postConstructMethod -> {
-              try {
-                postConstructMethod.setAccessible(true);
-                postConstructMethod.invoke(targetInstance, new Object[]{});
-              } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-                throw new RuntimeException(ex);
-              }
-            });
-  }
+    private void registerInterfaces(Class type) {
+        types.put(type, type);
+        for (Class interFace : type.getInterfaces()) {
+            if (types.containsKey(interFace)) {
+                throw new RuntimeException("Ambigious Puppet for " + interFace);
+            }
+            types.put(interFace, type);
+        }
+    }
+
+    public <T> T instance(Class<T> type) {
+        try {
+            T newInstance = (T) construct(types.get(type));
+            processFields(type, newInstance);
+            processPostConstruct(type, newInstance);
+            return newInstance;
+        } catch (Exception ex) {
+            Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private <T> T construct(Class<T> type) throws Exception {
+        List<Constructor<?>> injectableConstructors = Arrays.stream(type.getConstructors())
+                .filter(constructor -> constructor.getAnnotation(Inject.class) != null)
+                .collect(Collectors.toList());
+
+        switch (injectableConstructors.size()) {
+            case 0: {
+                //Try default constructor.
+                Constructor<T> constructor = type.getConstructor(EMPTY_TYPE_ARRAY);
+                return constructor.newInstance(EMPTY_OBJ_ARRAY);
+            }
+            case 1: {
+                Constructor<T> constructor = (Constructor<T>) injectableConstructors.get(0);
+                Class<?>[] parameterTypes = constructor.getParameterTypes();
+                //Initalize parameter types.
+                Object[] params = Arrays.stream(parameterTypes)
+                        .map(paramType -> instance(paramType))
+                        .toArray();
+                return constructor.newInstance(params);
+            }
+            default:
+                throw new RuntimeException("Ambigious Injectable constructor for " + type);
+        }
+    }
+
+    private <T> void processFields(Class<T> type, T targetInstance) {
+        for (Field field : type.getDeclaredFields()) {
+            Inject annotation = field.getAnnotation(Inject.class);
+            if (annotation != null) {
+                Object instance = instance(field.getType());
+                field.setAccessible(true);
+                try {
+                    field.set(targetInstance, instance);
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
+    }
+
+    private <T> void processPostConstruct(Class<T> type, T targetInstance) {
+        Method[] declaredMethods = type.getDeclaredMethods();
+
+        Arrays.stream(declaredMethods)
+                .filter(method -> method.getAnnotation(PostConstruct.class) != null)
+                .forEach(postConstructMethod -> {
+                    try {
+                        postConstructMethod.setAccessible(true);
+                        postConstructMethod.invoke(targetInstance, new Object[]{});
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                        Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+                        throw new RuntimeException(ex);
+                    }
+                });
+    }
 }
