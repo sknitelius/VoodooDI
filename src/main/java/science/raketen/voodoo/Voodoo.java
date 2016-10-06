@@ -36,91 +36,100 @@ import science.raketen.voodoo.context.singleton.SingletonContextualType;
  */
 public class Voodoo {
 
-  private final Map<Class, ContextualType> types = new ConcurrentHashMap<>();
+    private static final Object[] EMPTY_OBJ_ARRAY = new Object[]{};
+    private static final Class[] EMPTY_TYPE_ARRAY = new Class[]{};
 
-  private Voodoo() {
-  }
+    private final Map<Class, ContextualType> types = new ConcurrentHashMap<>();
 
-  public static Voodoo initalize() {
-    return initalize("");
-  }
-
-  public static Voodoo initalize(String packageName) {
-    final Voodoo voodoo = new Voodoo();
-    voodoo.scan(packageName);
-    return voodoo;
-  }
-
-  private void scan(String packageName) {
-    List<Class> discoveredTypes = TypeScanner.find(packageName);
-    discoveredTypes.stream()
-            .filter((type) -> (!type.isInterface() 
-                    && !Modifier.isAbstract(type.getModifiers()) 
-                    && !type.getPackage().getName().startsWith("science.raketen.voodoo"))
-            ).forEach((Class type) -> {
-              System.out.println(type.getPackage().getName());
-              ContextualType contextualType = buildContextualInstance(type);
-              types.put(type, contextualType);
-              registerInterfaces(contextualType);
-              registerSuperTypes(contextualType);
-            });
-  }
-
-  private ContextualType buildContextualInstance(Class type) {
-    Annotation singleton = type.getAnnotation(Singleton.class);
-    if(singleton == null) {
-      return new PuppetContextualType(type);
-    } else {
-      return new SingletonContextualType(type);
+    private static Voodoo voodoo;
+    
+    private Voodoo() {
     }
-  }
 
-  private void registerSuperTypes(ContextualType contextualType) {
-    Class type = contextualType.getType();
-    Class<?> superclass = type.getSuperclass();
-    while (superclass != null && superclass != Object.class) {
-      if (types.containsKey(superclass)) {
-        throw new RuntimeException("Ambigious Puppet for " + superclass);
-      }
-      types.put(superclass, contextualType);
-      superclass = type.getSuperclass() == superclass ? null : type.getSuperclass();
+    public static Voodoo initalize() {
+        return initalize("");
     }
-  }
 
-  private void registerInterfaces(ContextualType context) {
-    Class type = context.getType();
-    for (Class interFace : type.getInterfaces()) {
-      if (types.containsKey(interFace)) {
-        throw new RuntimeException("Ambigious Puppet for " + interFace);
-      }
-      types.put(interFace, context);
+    public static Voodoo initalize(String packageName) {
+        voodoo = new Voodoo();
+        voodoo.scan(packageName);
+        return voodoo;
     }
-  }
 
-  public <T> T instance(Class<T> type) {
-    T contextualInstance = null;
-    try {
-      contextualInstance = (T) types.get(type).getContextualInstance();
-      processFields(type, contextualInstance);
-    } catch (Exception ex) {
-      Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+    public static Voodoo current() {
+        return voodoo;
     }
-    return contextualInstance;
-  }
 
-  private <T> void processFields(Class<T> type, T targetInstance) {
-    for (Field field : type.getDeclaredFields()) {
-      Inject annotation = field.getAnnotation(Inject.class);
-      if (annotation != null) {
-        Object instance = instance(field.getType());
-        field.setAccessible(true);
-        try {
-          field.set(targetInstance, instance);
-        } catch (IllegalArgumentException | IllegalAccessException ex) {
-          Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-          throw new RuntimeException(ex);
+    private void scan(String packageName) {
+        List<Class> discoveredTypes = TypeScanner.find(packageName);
+        discoveredTypes.stream()
+                .filter((type) -> (!type.isInterface()
+                && !Modifier.isAbstract(type.getModifiers())
+                && !type.getPackage().getName().startsWith("science.raketen.voodoo"))
+                ).forEach((Class type) -> {
+                    System.out.println(type.getPackage().getName());
+                    ContextualType contextualType = buildContextualInstance(type);
+                    types.put(type, contextualType);
+                    registerInterfaces(contextualType);
+                    registerSuperTypes(contextualType);
+                });
+    }
+
+    private ContextualType buildContextualInstance(Class type) {
+        Annotation singleton = type.getAnnotation(Singleton.class);
+        if (singleton == null) {
+            return new PuppetContextualType(type);
+        } else {
+            return new SingletonContextualType(type);
         }
-      }
     }
-  }
+
+    private void registerSuperTypes(ContextualType contextualType) {
+        Class type = contextualType.getType();
+        Class<?> superclass = type.getSuperclass();
+        while (superclass != null && superclass != Object.class) {
+            if (types.containsKey(superclass)) {
+                throw new RuntimeException("Ambigious Puppet for " + superclass);
+            }
+            types.put(superclass, contextualType);
+            superclass = type.getSuperclass() == superclass ? null : type.getSuperclass();
+        }
+    }
+
+    private void registerInterfaces(ContextualType context) {
+        Class type = context.getType();
+        for (Class interFace : type.getInterfaces()) {
+            if (types.containsKey(interFace)) {
+                throw new RuntimeException("Ambigious Puppet for " + interFace);
+            }
+            types.put(interFace, context);
+        }
+    }
+
+    public <T> T instance(Class<T> type) {
+        T contextualInstance = null;
+        try {
+            contextualInstance = (T) types.get(type).getContextualInstance();
+            processFields(type, contextualInstance);
+        } catch (Exception ex) {
+            Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return contextualInstance;
+    }
+
+    private <T> void processFields(Class<T> type, T targetInstance) {
+        for (Field field : type.getDeclaredFields()) {
+            Inject annotation = field.getAnnotation(Inject.class);
+            if (annotation != null) {
+                Object instance = instance(field.getType());
+                field.setAccessible(true);
+                try {
+                    field.set(targetInstance, instance);
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
+    }
 }

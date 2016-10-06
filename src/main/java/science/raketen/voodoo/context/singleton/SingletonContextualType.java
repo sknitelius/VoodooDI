@@ -5,38 +5,37 @@
  */
 package science.raketen.voodoo.context.singleton;
 
-import java.lang.reflect.Constructor;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.locks.ReentrantLock;
 import science.raketen.voodoo.context.ContextualType;
 
 /**
  * Manages the singleton contextual instance.
- * 
- * @author Stephan Knitelius <stephan@knitelius.com>
+ *
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class SingletonContextualType<T> extends ContextualType {
 
-  private final T singleton;
-  
-  public SingletonContextualType(Class type) {
-    super(type);
-    singleton = createSingleton(type);
-  }
+    private final ReentrantLock reentrantLock = new ReentrantLock();
+    private T singleton;
 
-  private T createSingleton(Class type) {
-    try {
-      Constructor<T> constructor = type.getConstructor(new Class[]{});
-      return constructor.newInstance(new Object[]{});
-    } catch (Exception ex) {
-      Logger.getLogger(SingletonContextualType.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
+    public SingletonContextualType(Class type) {
+        super(type);
     }
-  }
 
-  @Override
-  public T getContextualInstance() {
-    return singleton;
-  }
-  
+    @Override
+    public T getContextualInstance() {
+        if (singleton == null) {
+            initalizeSingleton();
+        }
+        return singleton;
+    }
+
+    private void initalizeSingleton() {
+        reentrantLock.lock();
+        if (singleton == null) {
+            singleton = (T) createInstance(getType());
+        }
+        reentrantLock.unlock();
+    }
+
 }

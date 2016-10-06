@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
+ * Copyright 2016 Stephan Knitelius {@literal <stephan@knitelius.com>}.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,14 @@ package science.raketen.voodoo;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import science.raketen.test.puppets.Highlander;
-import science.raketen.test.puppets.Houngan;
 import science.raketen.test.puppets.Scotland;
 
 /**
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public class VoodooTest {
-
-  @Test
-  public void testInterfaceInjection() {
-    Voodoo container = Voodoo.initalize();
-    Houngan helloService = container.instance(Houngan.class);
-    assertTrue(helloService.summon("Hogo").contains("Hogo"));
-  }
-  
-  @Test
+public class SingletonTest {
+      @Test
   public void testSingleton() {
     Voodoo initalize = Voodoo.initalize();
     Highlander highlanderRef1 = initalize.instance(Highlander.class);
