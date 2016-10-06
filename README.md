@@ -3,6 +3,7 @@
 VoodooDI is developed as part of an educational blog series, explaining the inner workings of DI frameworks.
 
 * [Part 1: Understanding Dependency Injection - IoC](https://www.knitelius.com/2016/09/21/understanding-dependency-injection-part-1-ioc/) 
+* [Part 2: Understanding Dependency Injection - PostConstruct and Constructor Injection](https://www.knitelius.com/2016/10/05/understanding-dependency-injection-part-2-postconstruct-and-constructor-injection/) 
 
 ## Fork Me 
 Fork and/or clone the project.
