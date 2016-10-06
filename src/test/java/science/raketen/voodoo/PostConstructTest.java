@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
+ * Copyright 2016 Stephan Knitelius {@literal <stephan@knitelius.com>}.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,19 @@ package science.raketen.voodoo;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import science.raketen.test.puppets.HotRod;
-import science.raketen.test.puppets.Houngan;
+import science.raketen.test.puppets.Car;
 
 /**
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public class InjectionTest {
-
-  @Test
-  public void testInterfaceInjection() {
-    Voodoo container = Voodoo.initalize();
-    Houngan helloService = container.instance(Houngan.class);
-    assertTrue(helloService.summon("Hogo").contains("Hogo"));
-  }
-  
-  @Test
-  public void testConstructorInjection() {
-      Voodoo container = Voodoo.initalize();
-      HotRod hotrod = container.instance(HotRod.class);
-      assertTrue(hotrod.startEngine());
-  }
-  
+public class PostConstructTest {
+    
+    @Test
+    public void postConstructTest() {
+        Voodoo container = Voodoo.initalize();
+        Car car = container.instance(Car.class);
+        assertTrue(car.startEngine());
+    }
+    
 }

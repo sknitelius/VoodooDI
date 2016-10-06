@@ -16,14 +16,10 @@
 package science.raketen.voodoo;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import science.raketen.voodoo.context.ContextualType;
 import science.raketen.voodoo.context.puppet.PuppetContextualType;
@@ -36,13 +32,10 @@ import science.raketen.voodoo.context.singleton.SingletonContextualType;
  */
 public class Voodoo {
 
-    private static final Object[] EMPTY_OBJ_ARRAY = new Object[]{};
-    private static final Class[] EMPTY_TYPE_ARRAY = new Class[]{};
-
     private final Map<Class, ContextualType> types = new ConcurrentHashMap<>();
 
     private static Voodoo voodoo;
-    
+
     private Voodoo() {
     }
 
@@ -107,29 +100,7 @@ public class Voodoo {
     }
 
     public <T> T instance(Class<T> type) {
-        T contextualInstance = null;
-        try {
-            contextualInstance = (T) types.get(type).getContextualInstance();
-            processFields(type, contextualInstance);
-        } catch (Exception ex) {
-            Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return contextualInstance;
+        return (T) types.get(type).getContextualInstance();
     }
 
-    private <T> void processFields(Class<T> type, T targetInstance) {
-        for (Field field : type.getDeclaredFields()) {
-            Inject annotation = field.getAnnotation(Inject.class);
-            if (annotation != null) {
-                Object instance = instance(field.getType());
-                field.setAccessible(true);
-                try {
-                    field.set(targetInstance, instance);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    Logger.getLogger(Voodoo.class.getName()).log(Level.SEVERE, null, ex);
-                    throw new RuntimeException(ex);
-                }
-            }
-        }
-    }
 }
