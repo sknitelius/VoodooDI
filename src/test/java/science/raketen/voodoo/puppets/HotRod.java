@@ -21,17 +21,18 @@ import javax.inject.Inject;
  *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public class Mug {
+public class HotRod {
   
-  private final Drink drink;
+  private final Engine engine;
   
   @Inject
-  public Mug(Drink drink) {
-    this.drink = drink;
+  public HotRod(Engine engine) {
+    engine.initalize();
+    this.engine = engine;
   }
   
-  public String drink() {
-    return drink.drink();
+  public boolean startEngine() {
+    return engine.isInitialized();
   }
   
 }

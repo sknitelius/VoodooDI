@@ -21,7 +21,7 @@ package science.raketen.voodoo.puppets;
  */
 public class Engine {
 
-  boolean initialized = false;
+  private boolean initialized = false;
   
   public void initalize() {
     this.initialized = true;

@@ -15,12 +15,11 @@
  */
 package science.raketen.voodoo;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import science.raketen.voodoo.puppets.Car;
+import science.raketen.voodoo.puppets.HotRod;
 import science.raketen.voodoo.puppets.Houngan;
-import science.raketen.voodoo.puppets.Mug;
 
 /**
  *
@@ -45,7 +44,7 @@ public class VoodooTest {
   @Test
   public void testConstructorInjection() {
     Voodoo container = Voodoo.initalize();
-    Mug mug = container.instance(Mug.class);
-    assertEquals("coffee", mug.drink());
+    HotRod hotRod = container.instance(HotRod.class);
+    assertTrue(hotRod.startEngine());
   }
 }
