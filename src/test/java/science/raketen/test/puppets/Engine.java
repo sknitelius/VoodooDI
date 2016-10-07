@@ -20,8 +20,9 @@ package science.raketen.test.puppets;
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class Engine {
+
     private boolean initalized = false;
-    
+
     public void initalize() {
         System.out.println(this);
         initalized = true;
@@ -31,5 +32,5 @@ public class Engine {
         System.out.println(this);
         return initalized;
     }
-    
+
 }

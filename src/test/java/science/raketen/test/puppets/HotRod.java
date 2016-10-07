@@ -22,15 +22,15 @@ import javax.inject.Inject;
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class HotRod {
-    
+
     private Engine engine;
-    
+
     @Inject
     public HotRod(Engine engine) {
         this.engine = engine;
         engine.initalize();
     }
-    
+
     public boolean startEngine() {
         return engine.isInitialized();
     }

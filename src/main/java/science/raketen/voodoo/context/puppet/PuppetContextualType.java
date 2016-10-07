@@ -9,18 +9,18 @@ import science.raketen.voodoo.context.ContextualType;
 
 /**
  * Puppet scope - provides a new instance every time.
- * 
+ *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public class PuppetContextualType<T> extends ContextualType {
 
-  public PuppetContextualType(Class type) {
-    super(type);
-  }
+    public PuppetContextualType(Class type) {
+        super(type);
+    }
 
-  @Override
-  public T getContextualInstance() {
-      return (T) createInstance(getType());
-  }
-  
+    @Override
+    public T getContextualInstance() {
+        return (T) createInstance(getType());
+    }
+
 }

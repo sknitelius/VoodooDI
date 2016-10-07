@@ -24,12 +24,12 @@ import science.raketen.test.puppets.Car;
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class PostConstructTest {
-    
+
     @Test
     public void postConstructTest() {
         Voodoo container = Voodoo.initalize();
         Car car = container.instance(Car.class);
         assertTrue(car.startEngine());
     }
-    
+
 }

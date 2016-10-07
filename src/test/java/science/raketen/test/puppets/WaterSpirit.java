@@ -15,17 +15,16 @@
  */
 package science.raketen.test.puppets;
 
-
 /**
  * Water Spirit.
- * 
+ *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public class WaterSpirit implements Spirit {
 
-  @Override
-  public String interact(String name) {
-    return String.format("Waterspirit %s summoned.", name);
-  }
-  
+    @Override
+    public String interact(String name) {
+        return String.format("Waterspirit %s summoned.", name);
+    }
+
 }

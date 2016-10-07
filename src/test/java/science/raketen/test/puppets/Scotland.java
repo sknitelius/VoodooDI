@@ -22,11 +22,12 @@ import javax.inject.Inject;
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public class Scotland {
-  @Inject
-  private Highlander highlander;
-  
-  public Highlander getHighlander() {
-    return highlander;
-  }
-  
+
+    @Inject
+    private Highlander highlander;
+
+    public Highlander getHighlander() {
+        return highlander;
+    }
+
 }

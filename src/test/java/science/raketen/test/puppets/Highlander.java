@@ -9,12 +9,13 @@ import javax.inject.Singleton;
 
 /**
  * Highlander - There can be only one.
- * 
+ *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 @Singleton
 public class Highlander {
-  public String catchFrace() {
-    return "There can be only one.";
-  }
+
+    public String catchFrace() {
+        return "There can be only one.";
+    }
 }

@@ -26,18 +26,18 @@ import science.raketen.test.puppets.Houngan;
  */
 public class InjectionTest {
 
-  @Test
-  public void testInterfaceInjection() {
-    Voodoo container = Voodoo.initalize();
-    Houngan helloService = container.instance(Houngan.class);
-    assertTrue(helloService.summon("Hogo").contains("Hogo"));
-  }
-  
-  @Test
-  public void testConstructorInjection() {
-      Voodoo container = Voodoo.initalize();
-      HotRod hotrod = container.instance(HotRod.class);
-      assertTrue(hotrod.startEngine());
-  }
-  
+    @Test
+    public void testInterfaceInjection() {
+        Voodoo container = Voodoo.initalize();
+        Houngan helloService = container.instance(Houngan.class);
+        assertTrue(helloService.summon("Hogo").contains("Hogo"));
+    }
+
+    @Test
+    public void testConstructorInjection() {
+        Voodoo container = Voodoo.initalize();
+        HotRod hotrod = container.instance(HotRod.class);
+        assertTrue(hotrod.startEngine());
+    }
+
 }

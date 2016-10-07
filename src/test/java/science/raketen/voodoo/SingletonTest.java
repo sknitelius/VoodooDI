@@ -25,21 +25,22 @@ import science.raketen.test.puppets.Scotland;
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class SingletonTest {
-      @Test
-  public void testSingleton() {
-    Voodoo initalize = Voodoo.initalize();
-    Highlander highlanderRef1 = initalize.instance(Highlander.class);
-    
-    Highlander highlanderRef2 = initalize.instance(Highlander.class);
-    assertTrue(highlanderRef1 == highlanderRef2);
-  }
-  
-  @Test 
-  public void testSingletonInjection() {
-    Voodoo container = Voodoo.initalize();
-    Highlander highlander = container.instance(Highlander.class);
-    
-    Scotland scotland = container.instance(Scotland.class);
-    assertTrue(highlander == scotland.getHighlander());
-  }
+
+    @Test
+    public void testSingleton() {
+        Voodoo initalize = Voodoo.initalize();
+        Highlander highlanderRef1 = initalize.instance(Highlander.class);
+
+        Highlander highlanderRef2 = initalize.instance(Highlander.class);
+        assertTrue(highlanderRef1 == highlanderRef2);
+    }
+
+    @Test
+    public void testSingletonInjection() {
+        Voodoo container = Voodoo.initalize();
+        Highlander highlander = container.instance(Highlander.class);
+
+        Scotland scotland = container.instance(Scotland.class);
+        assertTrue(highlander == scotland.getHighlander());
+    }
 }
