@@ -27,48 +27,49 @@ import java.util.stream.Collectors;
 
 /**
  * Simple Type Scanner, scans direct class path of Application.
- * 
+ *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public class TypeScanner {
-   public static List<Class> find(String packageName) {
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    String path = packageName.replace('.', '/');
-    try {
-      Enumeration<URL> resources = classLoader.getResources(path);
 
-      return Collections.list(resources).parallelStream()
-              .map(resource -> scanResource(resource.getFile(), packageName))
-              .flatMap(Collection::stream)
-              .collect(Collectors.toList());
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
-    }
-  }
-
-  private static List<Class> scanResource(String path, String packageName) {
-    return scanResource(new File(path), packageName);
-  }
-
-  private static List<Class> scanResource(File directory, String packageName) {
-    List<Class> classes = new ArrayList<>();
-    if (!directory.exists()) {
-      return classes;
-    }
-    File[] files = directory.listFiles();
-    for (File file : files) {
-      if (file.isDirectory()) {
-        packageName = "".equals(packageName) ? packageName : packageName + ".";
-        classes.addAll(scanResource(file, packageName + file.getName()));
-      } else if (file.getName().endsWith(".class")) {
+    public static List<Class> find(String packageName) {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        String path = packageName.replace('.', '/');
         try {
-          packageName = packageName.endsWith(".") ? packageName : packageName + '.';
-          classes.add(Class.forName(packageName + file.getName().replace(".class", "")));
-        } catch (ClassNotFoundException ex) {
-          throw new RuntimeException(ex);
+            Enumeration<URL> resources = classLoader.getResources(path);
+
+            return Collections.list(resources).parallelStream()
+                    .map(resource -> scanResource(resource.getFile(), packageName))
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-      }
     }
-    return classes;
-  }
+
+    private static List<Class> scanResource(String path, String packageName) {
+        return scanResource(new File(path), packageName);
+    }
+
+    private static List<Class> scanResource(File directory, String packageName) {
+        List<Class> classes = new ArrayList<>();
+        if (!directory.exists()) {
+            return classes;
+        }
+        File[] files = directory.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                packageName = "".equals(packageName) || packageName.endsWith(".") ? packageName : packageName + ".";
+                classes.addAll(scanResource(file, packageName + file.getName()));
+            } else if (file.getName().endsWith(".class")) {
+                try {
+                    packageName = packageName.endsWith(".") ? packageName : packageName + '.';
+                    classes.add(Class.forName(packageName + file.getName().replace(".class", "")));
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }
+        return classes;
+    }
 }
