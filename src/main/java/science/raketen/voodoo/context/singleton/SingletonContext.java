@@ -25,20 +25,20 @@ import science.raketen.voodoo.context.ContextualType;
  */
 public class SingletonContext extends Context {
 
-  private static final Class SCOPE_ANNOTATION = Singleton.class;
-  
-  @Override
-  public Class getContextAnnotation() {
-    return SCOPE_ANNOTATION;
-  }
+    private static final Class SCOPE_ANNOTATION = Singleton.class;
 
-  @Override
-  protected ContextualType getContextualType(Class type) {
-    //@Singleton is a standard JSR-330 annotation, some classes in Google Guice 
-    //that do not have a default constructor are annotated with @Singelton. 
-    if(type.getPackage().getName().startsWith("com.google.")) {
-      return null;
+    @Override
+    public Class getContextAnnotation() {
+        return SCOPE_ANNOTATION;
     }
-    return new SingletonContextualType(type);
-  }
+
+    @Override
+    protected ContextualType getContextualType(Class type) {
+        //@Singleton is a standard JSR-330 annotation, some classes in Google Guice 
+        //that do not have a default constructor are annotated with @Singelton. 
+        if (type.getPackage().getName().startsWith("com.google.")) {
+            return null;
+        }
+        return new SingletonContextualType(type);
+    }
 }

@@ -19,18 +19,18 @@ import javax.inject.Inject;
 import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
- * Voodoo priest - can interact with the spirits. 
- * 
+ * Voodoo priest - can interact with the spirits.
+ *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 @Puppet
 public class Houngan {
 
-  @Inject
-  private Spirit spirit;
-  
-  public String summon(String name) {
-    return spirit.interact(name);
-  }
-  
+    @Inject
+    private Spirit spirit;
+
+    public String summon(String name) {
+        return spirit.interact(name);
+    }
+
 }

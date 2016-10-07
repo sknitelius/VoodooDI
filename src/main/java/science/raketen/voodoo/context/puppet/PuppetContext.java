@@ -24,16 +24,16 @@ import science.raketen.voodoo.context.ContextualType;
  */
 public class PuppetContext extends Context {
 
-  private static final Class SCOPE_ANNOTATION = Puppet.class;
-  
-  @Override
-  public Class getContextAnnotation() {
-    return SCOPE_ANNOTATION;
-  }
+    private static final Class SCOPE_ANNOTATION = Puppet.class;
 
-  @Override
-  protected ContextualType getContextualType(Class type) {
-    return new PuppetContextualType(type);
-  }
+    @Override
+    public Class getContextAnnotation() {
+        return SCOPE_ANNOTATION;
+    }
+
+    @Override
+    protected ContextualType getContextualType(Class type) {
+        return new PuppetContextualType(type);
+    }
 
 }

@@ -24,11 +24,12 @@ import science.raketen.voodoo.context.puppet.Puppet;
  */
 @Puppet
 public class Scotland {
-  @Inject
-  private Highlander highlander;
-  
-  public Highlander getHighlander() {
-    return highlander;
-  }
-  
+
+    @Inject
+    private Highlander highlander;
+
+    public Highlander getHighlander() {
+        return highlander;
+    }
+
 }

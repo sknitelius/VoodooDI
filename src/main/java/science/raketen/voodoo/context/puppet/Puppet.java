@@ -25,5 +25,5 @@ import javax.inject.Scope;
 @Scope
 @Inherited
 public @interface Puppet {
-  
+
 }

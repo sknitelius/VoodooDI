@@ -27,28 +27,28 @@ import science.raketen.voodoo.puppets.Scotland;
  */
 public class VoodooTest {
 
-  @Test
-  public void testInterfaceInjection() {
-    Voodoo container = Voodoo.initalize();
-    Houngan helloService = container.instance(Houngan.class);
-    assertTrue(helloService.summon("Hogo").contains("Hogo"));
-  }
-  
-  @Test
-  public void testSingleton() {
-    Voodoo initalize = Voodoo.initalize();
-    Highlander highlanderRef1 = initalize.instance(Highlander.class);
-    
-    Highlander highlanderRef2 = initalize.instance(Highlander.class);
-    assertTrue(highlanderRef1 == highlanderRef2);
-  }
-  
-  @Test 
-  public void testSingletonInjection() {
-    Voodoo container = Voodoo.initalize();
-    Highlander highlander = container.instance(Highlander.class);
-    
-    Scotland scotland = container.instance(Scotland.class);
-    assertTrue(highlander == scotland.getHighlander());
-  }
+    @Test
+    public void testInterfaceInjection() {
+        Voodoo container = Voodoo.initalize();
+        Houngan helloService = container.instance(Houngan.class);
+        assertTrue(helloService.summon("Hogo").contains("Hogo"));
+    }
+
+    @Test
+    public void testSingleton() {
+        Voodoo initalize = Voodoo.initalize();
+        Highlander highlanderRef1 = initalize.instance(Highlander.class);
+
+        Highlander highlanderRef2 = initalize.instance(Highlander.class);
+        assertTrue(highlanderRef1 == highlanderRef2);
+    }
+
+    @Test
+    public void testSingletonInjection() {
+        Voodoo container = Voodoo.initalize();
+        Highlander highlander = container.instance(Highlander.class);
+
+        Scotland scotland = container.instance(Scotland.class);
+        assertTrue(highlander == scotland.getHighlander());
+    }
 }

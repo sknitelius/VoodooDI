@@ -10,33 +10,32 @@ import science.raketen.voodoo.context.ContextualType;
 
 /**
  * Manages the singleton contextual instance.
- * 
+ *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class SingletonContextualType<T> extends ContextualType {
 
-  private final ReentrantLock reentrantLock = new ReentrantLock();
-  private T singleton;
-  
-  
-  public SingletonContextualType(Class type) {
-    super(type);
-  }
+    private final ReentrantLock reentrantLock = new ReentrantLock();
+    private T singleton;
 
-  @Override
-  public T getContextualInstance() {
-    if(singleton == null) {
-        initalizeSingleton();
+    public SingletonContextualType(Class type) {
+        super(type);
     }
-    return singleton;
-  }
+
+    @Override
+    public T getContextualInstance() {
+        if (singleton == null) {
+            initalizeSingleton();
+        }
+        return singleton;
+    }
 
     private void initalizeSingleton() {
         reentrantLock.lock();
-        if(singleton == null) {
+        if (singleton == null) {
             singleton = (T) createInstance(getType());
         }
         reentrantLock.unlock();
     }
-  
+
 }
