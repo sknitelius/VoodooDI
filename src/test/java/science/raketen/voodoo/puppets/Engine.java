@@ -21,14 +21,14 @@ package science.raketen.voodoo.puppets;
  */
 public class Engine {
 
-  private boolean initialized = false;
-  
-  public void initalize() {
-    this.initialized = true;
-  }
+    private boolean initialized = false;
 
-  public boolean isInitialized() {
-    return initialized;
-  }
-  
+    public void initalize() {
+        this.initialized = true;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
 }

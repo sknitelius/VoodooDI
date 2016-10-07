@@ -23,16 +23,16 @@ import javax.inject.Inject;
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 public class Car {
-  
-  @Inject
-  private Engine engine;
-  
-  @PostConstruct
-  public void postConstruct() {
-    engine.initalize();
-  }
 
-  public boolean startEngine() {
-    return engine.isInitialized();
-  }
+    @Inject
+    private Engine engine;
+
+    @PostConstruct
+    public void postConstruct() {
+        engine.initalize();
+    }
+
+    public boolean startEngine() {
+        return engine.isInitialized();
+    }
 }

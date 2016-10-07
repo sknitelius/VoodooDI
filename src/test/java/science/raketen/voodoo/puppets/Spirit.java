@@ -15,13 +15,12 @@
  */
 package science.raketen.voodoo.puppets;
 
-
 /**
  *
  * @author Stephan Knitelius <stephan@knitelius.com>
  */
 public interface Spirit {
 
-  public String interact(String name);
-  
+    public String interact(String name);
+
 }

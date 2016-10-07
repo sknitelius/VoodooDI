@@ -23,11 +23,11 @@ import javax.inject.Inject;
  */
 public class Houngan {
 
-  @Inject
-  private Spirit greeter;
-  
-  public String summon(String name) {
-    return greeter.interact(name);
-  }
-  
+    @Inject
+    private Spirit greeter;
+
+    public String summon(String name) {
+        return greeter.interact(name);
+    }
+
 }
