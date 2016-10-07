@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import science.raketen.voodoo.puppets.Car;
 import science.raketen.voodoo.puppets.HotRod;
-import science.raketen.voodoo.puppets.Houngan;
 
 /**
  *
@@ -27,24 +26,23 @@ import science.raketen.voodoo.puppets.Houngan;
  */
 public class VoodooTest {
 
-  @Test
-  public void test() throws Exception {
-    Voodoo container = Voodoo.initalize("science.raketen.voodoo.puppets");
-    Houngan helloService = container.instance(Houngan.class);
-    assertTrue(helloService.summon("Hogo").contains("Hogo"));
-  }
-  
-  @Test
-  public void testPostConstruct() {
-    Voodoo container = Voodoo.initalize();
-    Car car = container.instance(Car.class);
-    assertTrue(car.startEngine());
-  }
-  
-  @Test
-  public void testConstructorInjection() {
-    Voodoo container = Voodoo.initalize();
-    HotRod hotRod = container.instance(HotRod.class);
-    assertTrue(hotRod.startEngine());
-  }
+//  @Test
+//  public void test() throws Exception {
+//    Voodoo container = Voodoo.initalize("science.raketen.voodoo.puppets");
+//    Houngan helloService = container.instance(Houngan.class);
+//    assertTrue(helloService.summon("Hogo").contains("Hogo"));
+//  }
+    @Test
+    public void testPostConstruct() {
+        Voodoo container = Voodoo.initalize();
+        Car car = container.instance(Car.class);
+        assertTrue(car.startEngine());
+    }
+
+    @Test
+    public void testConstructorInjection() {
+        Voodoo container = Voodoo.initalize();
+        HotRod hotRod = container.instance(HotRod.class);
+        assertTrue(hotRod.startEngine());
+    }
 }
