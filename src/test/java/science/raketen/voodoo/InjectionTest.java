@@ -17,15 +17,14 @@ package science.raketen.voodoo;
 
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import science.raketen.voodoo.puppets.Highlander;
-import science.raketen.voodoo.puppets.Houngan;
-import science.raketen.voodoo.puppets.Scotland;
+import science.raketen.test.puppets.HotRod;
+import science.raketen.test.puppets.Houngan;
 
 /**
  *
- * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
+ * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class VoodooTest {
+public class InjectionTest {
 
     @Test
     public void testInterfaceInjection() {
@@ -35,20 +34,10 @@ public class VoodooTest {
     }
 
     @Test
-    public void testSingleton() {
-        Voodoo initalize = Voodoo.initalize();
-        Highlander highlanderRef1 = initalize.instance(Highlander.class);
-
-        Highlander highlanderRef2 = initalize.instance(Highlander.class);
-        assertTrue(highlanderRef1 == highlanderRef2);
-    }
-
-    @Test
-    public void testSingletonInjection() {
+    public void testConstructorInjection() {
         Voodoo container = Voodoo.initalize();
-        Highlander highlander = container.instance(Highlander.class);
-
-        Scotland scotland = container.instance(Scotland.class);
-        assertTrue(highlander == scotland.getHighlander());
+        HotRod hotrod = container.instance(HotRod.class);
+        assertTrue(hotrod.startEngine());
     }
+
 }

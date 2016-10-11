@@ -30,9 +30,9 @@ import science.raketen.voodoo.Voodoo;
  *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public class ContextProcessor {
+public class ContextManager {
 
-    private ContextProcessor() {
+    private ContextManager() {
     }
 
     public static Map<Class, ContextualType> process(String packageName) {

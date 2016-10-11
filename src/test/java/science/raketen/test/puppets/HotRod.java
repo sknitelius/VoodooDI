@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
+ * Copyright 2016 Stephan Knitelius {@literal <stephan@knitelius.com>}.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.puppets;
+package science.raketen.test.puppets;
 
 import javax.inject.Inject;
 import science.raketen.voodoo.context.puppet.Puppet;
@@ -23,13 +23,17 @@ import science.raketen.voodoo.context.puppet.Puppet;
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
 @Puppet
-public class Scotland {
+public class HotRod {
+
+    private Engine engine;
 
     @Inject
-    private Highlander highlander;
-
-    public Highlander getHighlander() {
-        return highlander;
+    public HotRod(Engine engine) {
+        this.engine = engine;
+        engine.initalize();
     }
 
+    public boolean startEngine() {
+        return engine.isInitialized();
+    }
 }

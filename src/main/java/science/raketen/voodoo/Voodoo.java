@@ -16,7 +16,7 @@
 package science.raketen.voodoo;
 
 import java.util.Map;
-import science.raketen.voodoo.context.ContextProcessor;
+import science.raketen.voodoo.context.ContextManager;
 import science.raketen.voodoo.context.ContextualType;
 
 /**
@@ -31,7 +31,7 @@ public class Voodoo {
     private static Voodoo voodoo;
 
     private Voodoo(String packageName) {
-        types = ContextProcessor.process(packageName);
+        types = ContextManager.process(packageName);
     }
 
     public static Voodoo initalize() {

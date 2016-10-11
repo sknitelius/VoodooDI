@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.puppets;
+package science.raketen.test.puppets;
 
 import javax.inject.Inject;
 import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
- * Voodoo priest - can interact with the spirits.
  *
- * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
+ * @author Stephan Knitelius <stephan@knitelius.com>
  */
 @Puppet
-public class Houngan {
+public class Scotland {
 
     @Inject
-    private Spirit spirit;
+    private Highlander highlander;
 
-    public String summon(String name) {
-        return spirit.interact(name);
+    public Highlander getHighlander() {
+        return highlander;
     }
 
 }
