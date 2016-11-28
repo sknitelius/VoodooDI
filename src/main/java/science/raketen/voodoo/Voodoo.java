@@ -16,7 +16,7 @@
 package science.raketen.voodoo;
 
 import java.util.Map;
-import science.raketen.voodoo.context.ContextProcessor;
+import science.raketen.voodoo.context.ContextManager;
 import science.raketen.voodoo.context.ContextualType;
 
 /**
@@ -26,32 +26,32 @@ import science.raketen.voodoo.context.ContextualType;
  */
 public class Voodoo {
 
-  private final Map<Class, ContextualType> types;
-  
-  private static Voodoo voodoo;
-  
-  private Voodoo(String packageName) {
-    types = ContextProcessor.process(packageName);
-  }
+    private final Map<Class, ContextualType> types;
 
-  public static Voodoo initalize() {
-    return initalize("");
-  }
+    private static Voodoo voodoo;
 
-  public static Voodoo initalize(String packageName) {
-    voodoo = new Voodoo(packageName);
-    return voodoo;
-  }
-  
-  public static Voodoo getCurrent() {
-      if(voodoo == null) {
-          throw new RuntimeException("Voodoo has not been initalized.");
-      }
-      return voodoo;
-  }
+    private Voodoo(String packageName) {
+        types = ContextManager.process(packageName);
+    }
 
-  public <T> T instance(Class<T> type) {
-      return (T) types.get(type).getContextualInstance();
-  }
+    public static Voodoo initalize() {
+        return initalize("");
+    }
+
+    public static Voodoo initalize(String packageName) {
+        voodoo = new Voodoo(packageName);
+        return voodoo;
+    }
+
+    public static Voodoo current() {
+        if (voodoo == null) {
+            throw new RuntimeException("Voodoo has not been initalized.");
+        }
+        return voodoo;
+    }
+
+    public <T> T instance(Class<T> type) {
+        return (T) types.get(type).getContextualInstance();
+    }
 
 }

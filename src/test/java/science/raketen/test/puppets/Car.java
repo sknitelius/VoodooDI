@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
+ * Copyright 2016 Stephan Knitelius {@literal <stephan@knitelius.com>}.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.context.puppet;
+package science.raketen.test.puppets;
 
-import science.raketen.voodoo.context.Context;
-import science.raketen.voodoo.context.ContextualType;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
  *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public class PuppetContext extends Context {
+@Puppet
+public class Car {
 
-    private static final Class SCOPE_ANNOTATION = Puppet.class;
+    @Inject
+    private Engine engine;
 
-    @Override
-    public Class getContextAnnotation() {
-        return SCOPE_ANNOTATION;
+    @PostConstruct
+    public void postConstruct() {
+        engine.initalize();
     }
 
-    @Override
-    protected ContextualType buildContextualType(Class type) {
-        return new PuppetContextualType(type);
+    public boolean startEngine() {
+        return engine.isInitialized();
     }
-
 }

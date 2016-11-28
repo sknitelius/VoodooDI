@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import science.raketen.voodoo.Voodoo;
-import science.raketen.voodoo.context.singleton.SingletonContextualType;
 
 /**
  * Used by scopes to provide access to the contextual instance.
@@ -56,7 +55,7 @@ public abstract class ContextualType<T> {
             processPostConstruct(type, targetInstance);
             return targetInstance;
         } catch (Exception ex) {
-            Logger.getLogger(SingletonContextualType.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ContextualType.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
     }
@@ -78,7 +77,7 @@ public abstract class ContextualType<T> {
                 constructor = (Constructor<T>) injectableConstructors.get(0);
                 Class<?>[] parameterTypes = constructor.getParameterTypes();
                 params = Arrays.stream(parameterTypes)
-                        .map(paramType -> Voodoo.getCurrent().instance(paramType))
+                        .map(paramType -> Voodoo.current().instance(paramType))
                         .toArray();
                 break;
             default:
@@ -91,7 +90,7 @@ public abstract class ContextualType<T> {
         for (Field field : type.getDeclaredFields()) {
             Inject annotation = field.getAnnotation(Inject.class);
             if (annotation != null) {
-                Object instance = Voodoo.getCurrent().instance(field.getType());
+                Object instance = Voodoo.current().instance(field.getType());
                 field.setAccessible(true);
                 try {
                     field.set(targetInstance, instance);

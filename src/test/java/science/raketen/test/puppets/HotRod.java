@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
+ * Copyright 2016 Stephan Knitelius {@literal <stephan@knitelius.com>}.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.puppets;
+package science.raketen.test.puppets;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
+import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
- * Highlander - There can be only one.
- * 
+ *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-@Singleton
-public class Highlander {
-  public String catchPhrase() {
-    return "There can be only one.";
-  }
+@Puppet
+public class HotRod {
+
+    private Engine engine;
+
+    @Inject
+    public HotRod(Engine engine) {
+        this.engine = engine;
+        engine.initalize();
+    }
+
+    public boolean startEngine() {
+        return engine.isInitialized();
+    }
 }

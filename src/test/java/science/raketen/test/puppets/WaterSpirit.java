@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.context.puppet;
+package science.raketen.test.puppets;
 
-import science.raketen.voodoo.context.Context;
-import science.raketen.voodoo.context.ContextualType;
+import science.raketen.voodoo.context.puppet.Puppet;
 
 /**
+ * Water Spirit.
  *
- * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
+ * @author Stephan Knitelius <stephan@knitelius.com>
  */
-public class PuppetContext extends Context {
-
-    private static final Class SCOPE_ANNOTATION = Puppet.class;
-
-    @Override
-    public Class getContextAnnotation() {
-        return SCOPE_ANNOTATION;
-    }
+@Puppet
+public class WaterSpirit implements Spirit {
 
     @Override
-    protected ContextualType buildContextualType(Class type) {
-        return new PuppetContextualType(type);
+    public String interact(String name) {
+        return String.format("Waterspirit %s summoned.", name);
     }
 
 }

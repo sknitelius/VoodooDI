@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
+ * Copyright 2016 Stephan Knitelius {@literal <stephan@knitelius.com>}.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.puppets;
+package science.raketen.voodoo;
 
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import science.raketen.test.puppets.Car;
 
 /**
  *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public interface Spirit {
+public class PostConstructTest {
 
-  public String interact(String name);
-  
+    @Test
+    public void postConstructTest() {
+        Voodoo container = Voodoo.initalize();
+        Car car = container.instance(Car.class);
+        assertTrue(car.startEngine());
+    }
+
 }
