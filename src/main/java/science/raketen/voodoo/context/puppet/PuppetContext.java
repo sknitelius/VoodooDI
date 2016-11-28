@@ -32,7 +32,7 @@ public class PuppetContext extends Context {
     }
 
     @Override
-    protected ContextualType getContextualType(Class type) {
+    protected ContextualType buildContextualType(Class type) {
         return new PuppetContextualType(type);
     }
 

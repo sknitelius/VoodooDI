@@ -43,7 +43,7 @@ public class Voodoo {
         return voodoo;
     }
 
-    public static Voodoo getCurrent() {
+    public static Voodoo current() {
         if (voodoo == null) {
             throw new RuntimeException("Voodoo has not been initalized.");
         }

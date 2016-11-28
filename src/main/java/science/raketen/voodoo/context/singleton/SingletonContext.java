@@ -33,7 +33,7 @@ public class SingletonContext extends Context {
     }
 
     @Override
-    protected ContextualType getContextualType(Class type) {
+    protected ContextualType buildContextualType(Class type) {
         //@Singleton is a standard JSR-330 annotation, some classes in Google Guice 
         //that do not have a default constructor are annotated with @Singelton. 
         if (type.getPackage().getName().startsWith("com.google.")) {
