@@ -80,6 +80,7 @@ public class ContextManager {
             if (types.containsKey(interFace)) {
                 throw new RuntimeException("Ambigious Puppet for " + interFace);
             }
+            context.createProxyFor(interFace);
             types.put(interFace, context);
         }
     }

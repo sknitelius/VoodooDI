@@ -33,4 +33,8 @@ public class Houngan {
         return spirit.interact(name);
     }
 
+    public Spirit getSpirit() {
+        return spirit;
+    }
+
 }
