@@ -17,17 +17,16 @@ package science.raketen.voodoo.context;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javassist.util.proxy.MethodHandler;
+import javassist.util.proxy.ProxyFactory;
+import javassist.util.proxy.ProxyObject;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import science.raketen.voodoo.Voodoo;
@@ -42,11 +41,15 @@ public abstract class ContextualType<T> {
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[]{};
     private static final Class[] EMPTY_TYPE_ARRAY = new Class[]{};
 
-    private final Map<Class<T>, T> proxies = new ConcurrentHashMap<>();
-    
     private final Class<T> type;
+    private final T proxy;
 
     public ContextualType(Class<T> type) {
+        try {
+            this.proxy = createProxyFor(type);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
         this.type = type;
     }
 
@@ -123,20 +126,32 @@ public abstract class ContextualType<T> {
                     }
                 });
     }
-    
-    public T getContextualProxy(Class<T> type) {
-        return (T) proxies.get(type);
-    }
 
-    void createProxyFor(Class<T> type) {
-        T proxy = (T) Proxy.newProxyInstance(type.getClassLoader(), new Class[]{type}, new InvocationHandler() {
+    private T createProxyFor(Class<T> type) throws InstantiationException, IllegalAccessException {
+        ProxyFactory proxyFactory = new ProxyFactory() {
             @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                return method.invoke(getContextualInstance(), args);
+            protected ClassLoader getClassLoader() {
+                return type.getClassLoader();
+            }
+        };
+
+        proxyFactory.setSuperclass(type);
+        Class proxyClass = proxyFactory.createClass();
+        final T proxy = (T) proxyClass.newInstance();
+
+        ((ProxyObject) proxy).setHandler(new MethodHandler() {
+            @Override
+            public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
+                return thisMethod.invoke(getContextualInstance(), args);
             }
         });
-        proxies.put(type, proxy);
+
+        return proxy;
     }
-    
-    public abstract T getContextualInstance();
+
+    public T getContextualProxy() {
+        return proxy;
+    }
+
+    protected abstract T getContextualInstance();
 }

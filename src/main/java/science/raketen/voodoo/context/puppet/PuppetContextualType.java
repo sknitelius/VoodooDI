@@ -29,7 +29,7 @@ public class PuppetContextualType<T> extends ContextualType {
     }
 
     @Override
-    public T getContextualInstance() {
+    protected T getContextualInstance() {
         return (T) createInstance(getType());
     }
 }

@@ -39,7 +39,7 @@ public class ContextManager {
         Reflections reflections = new Reflections(new ConfigurationBuilder().addUrls(ClasspathHelper.forManifest()));
         Set<Class<? extends Context>> contexts = reflections.getSubTypesOf(Context.class);
 
-        Stream<ContextualType> contextualTypes = contexts.parallelStream()
+        Stream<ContextualType> contextualTypes = contexts.stream()
                 .map(contextType -> constructContext(contextType))
                 .map(context -> initalizeContext(context, reflections))
                 .flatMap(ctypes -> ctypes.stream());
@@ -80,7 +80,6 @@ public class ContextManager {
             if (types.containsKey(interFace)) {
                 throw new RuntimeException("Ambigious Puppet for " + interFace);
             }
-            context.createProxyFor(interFace);
             types.put(interFace, context);
         }
     }

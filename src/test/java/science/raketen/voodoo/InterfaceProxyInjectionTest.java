@@ -15,12 +15,10 @@
  */
 package science.raketen.voodoo;
 
-import java.lang.reflect.Proxy;
-import static org.junit.Assert.assertFalse;
+import javassist.util.proxy.ProxyFactory;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import science.raketen.test.puppets.Houngan;
-import science.raketen.test.puppets.WaterSpirit;
 
 /**
  *
@@ -29,13 +27,13 @@ import science.raketen.test.puppets.WaterSpirit;
 public class InterfaceProxyInjectionTest {
 
     @Test
-    public void testProxyForInterfaceInjection() {
+    public void testAllManagedBeansAreProxies() {
         Voodoo container = Voodoo.initalize();
         Houngan houngan = container.instance(Houngan.class);
         
-        //Expecting Proxy, not instance of WaterSpirit.
-        assertFalse(houngan.getSpirit() instanceof WaterSpirit);
-        assertTrue(Proxy.isProxyClass(houngan.getSpirit().getClass()));
+        //Expecting all managed beans to be proxies.
+        assertTrue(ProxyFactory.isProxyClass(houngan.getClass()));
+        assertTrue(ProxyFactory.isProxyClass(houngan.getSpirit().getClass()));
         
         assertTrue(houngan.summon("Hogo").contains("Hogo"));
     }

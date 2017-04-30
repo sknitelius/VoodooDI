@@ -51,11 +51,7 @@ public class Voodoo {
     }
 
     public <T> T instance(Class<T> type) {
-        if(type.isInterface()) {
-            return (T) types.get(type).getContextualProxy(type);
-        } else {
-            return (T) types.get(type).getContextualInstance();
-        }
+        return (T) types.get(type).getContextualProxy();
     }
 
 }

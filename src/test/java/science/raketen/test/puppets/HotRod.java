@@ -27,6 +27,8 @@ public class HotRod {
 
     private Engine engine;
 
+    public HotRod() {}
+    
     @Inject
     public HotRod(Engine engine) {
         this.engine = engine;
