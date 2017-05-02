@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
+ * Copyright 2017 Stephan Knitelius {@literal <stephan@knitelius.com>}.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.voodoo.context.puppet;
+package science.raketen.test.puppets;
 
-import science.raketen.voodoo.context.ContextualType;
+import java.lang.reflect.Method;
+import science.raketen.voodoo.interceptor.Interceptor;
 
 /**
- * Puppet scope - provides a new instance every time.
  *
  * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-public class PuppetContextualType<T> extends ContextualType {
-    
-    private final ThreadLocal threadLocal = new ThreadLocal();
-
-    public PuppetContextualType(Class<T> type) {
-        super(type);
-    }
+@Logger
+public class LogInterceptor implements Interceptor {
 
     @Override
-    protected T getContextualInstance() {
-        T instance = (T) threadLocal.get();
-        if (instance == null) {
-            instance = (T) createInstance(getType());
-            threadLocal.set(instance);
-        }
-        return instance;
+    public Object invoke(Class type, Object target, Method invokedMethod, Object[] args) throws Exception {
+        System.out.println(String.format("Called %s", invokedMethod.getName()));
+        Object returnValue = invokedMethod.invoke(target, args);
+        System.out.println(String.format("Method %s returned %s", invokedMethod.getName(),returnValue));
+        return returnValue;
     }
+    
 }

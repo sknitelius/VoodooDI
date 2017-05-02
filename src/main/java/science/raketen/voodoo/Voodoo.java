@@ -15,9 +15,13 @@
  */
 package science.raketen.voodoo;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import science.raketen.voodoo.context.ContextManager;
 import science.raketen.voodoo.context.ContextualType;
+import science.raketen.voodoo.interceptor.Interceptor;
+import science.raketen.voodoo.interceptor.InterceptorBinding;
+import science.raketen.voodoo.interceptor.InterceptorManager;
 
 /**
  * Voodoo DI Container - with support for Puppet and Singleton scopes.
@@ -27,11 +31,13 @@ import science.raketen.voodoo.context.ContextualType;
 public class Voodoo {
 
     private final Map<Class, ContextualType> types;
+    private final Map<InterceptorBinding, Class<? extends Interceptor>> interceptors;
 
     private static Voodoo voodoo;
 
     private Voodoo(String packageName) {
         types = ContextManager.process(packageName);
+        interceptors = InterceptorManager.process(packageName);
     }
 
     public static Voodoo initalize() {
@@ -52,6 +58,17 @@ public class Voodoo {
 
     public <T> T instance(Class<T> type) {
         return (T) types.get(type).getContextualProxy();
+    }
+
+    public Object executeInterceptorFor(Class type, Object target, Method invokedMethod, Object[] args) throws Exception {
+        InterceptorBinding annotation = invokedMethod.getAnnotation(InterceptorBinding.class);
+        final Class<? extends Interceptor> interceptorForMethod = interceptors.get(annotation);
+        if (interceptorForMethod == null) {
+            return invokedMethod.invoke(target, args);
+        } else {
+            Interceptor interceptor = interceptorForMethod.newInstance();
+            return interceptor.invoke(type, target,invokedMethod, args);
+        }
     }
 
 }

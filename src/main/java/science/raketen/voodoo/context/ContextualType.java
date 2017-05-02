@@ -142,7 +142,7 @@ public abstract class ContextualType<T> {
         ((ProxyObject) proxy).setHandler(new MethodHandler() {
             @Override
             public Object invoke(Object self, Method thisMethod, Method proceed, Object[] args) throws Throwable {
-                return thisMethod.invoke(getContextualInstance(), args);
+                return Voodoo.current().executeInterceptorFor(type, getContextualInstance(),thisMethod, args);
             }
         });
 
@@ -152,6 +152,7 @@ public abstract class ContextualType<T> {
     public T getContextualProxy() {
         return proxy;
     }
-
+    
     protected abstract T getContextualInstance();
+
 }

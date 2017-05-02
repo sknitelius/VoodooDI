@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Stephan Knitelius <stephan@knitelius.com>.
+ * Copyright 2017 Stephan Knitelius {@literal <stephan@knitelius.com>}.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package science.raketen.test.puppets;
+package science.raketen.voodoo.interceptor;
 
-import javax.inject.Inject;
-import science.raketen.voodoo.context.puppet.Puppet;
+import java.lang.reflect.Method;
 
 /**
- * Voodoo priest - can interact with the spirits.
  *
- * @author Stephan Knitelius <stephan@knitelius.com>
+ * @author Stephan Knitelius {@literal <stephan@knitelius.com>}
  */
-@Puppet
-public class Houngan {
-
-    @Inject
-    private Spirit spirit;
-
-    @Logger
-    public String summon(String name) {
-        return spirit.interact(name);
-    }
-
-    public Spirit getSpirit() {
-        return spirit;
-    }
-
+public interface Interceptor {
+    Object invoke(Class type, Object target, Method inokedMethods, Object[] args) throws Exception;
 }
